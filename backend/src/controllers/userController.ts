@@ -1,0 +1,62 @@
+import { Request, Response } from "express";
+import User from "../models/User";
+import bcrypt from "bcrypt";
+
+export const joinUser = async (req: Request, res: Response) => {
+  try {
+    const newUser = new User(req.body);
+    await newUser.save(); // save하면서 유효성 검사
+    return res.status(201).json(newUser);
+  } catch (error: any) {
+    // 중복 키 에러 코드
+    if (error.code === 11000) {
+      const field = Object.keys(error.keyValue)[0];
+      const errMsg =
+        field === "email"
+          ? "이미 사용중인 이메일 입니다."
+          : "이미 사용중인 아이디 입니다.";
+      res.status(400).json({ message: errMsg });
+    } else {
+      // field로 email, birth 구분해서 에러 나누기
+      const field = Object.keys(error.errors)[0];
+      return res.status(400).json({ message: error.message });
+    }
+  }
+};
+
+export const loginUser = async (req: Request, res: Response) => {
+  const { userId, password } = req.body;
+  try {
+    if (userId.length === 0 || password.length === 0) {
+      return res
+        .status(400)
+        .json({ message: "아이디나 비밀번호를 입력해주세요" });
+    }
+    // if (!userId || !password) {
+    //   res
+    //     .status(400)
+    //     .json({ message: "아이디와 비밀번호를 모두 입력해주세요" });
+    // }
+
+    // 유저 아이디로 DB에서 유저 찾기
+    const user = await User.findOne({ userId });
+    if (!user) {
+      return res.status(404).json({ message: "존재하지 않는 아이디입니다." });
+    }
+
+    // 비밀번호 일치 여부
+    const userPassword = user?.password || "";
+    const isMatch = await bcrypt.compare(password, userPassword);
+    if (!isMatch) {
+      return res.status(400).json({ message: "비밀번호가 일치하지 않습니다." });
+    }
+
+    return res.status(201).json({ message: "로그인 성공" });
+  } catch (error) {
+    return res.status(500).json({ message: "에러" });
+  }
+};
+
+export const kakaoLoginUser = (req: Request, res: Response) => {};
+
+export const googleLoginUser = (req: Request, res: Response) => {};
