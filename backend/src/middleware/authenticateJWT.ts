@@ -4,10 +4,6 @@ import jwt from "jsonwebtoken";
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY || "";
 const JWT_REFRESH_SECRET_KEY = process.env.JWT_REFRESH_SECRET_KEY || "";
 
-interface IUser {
-  id: string;
-}
-
 const generateAccessToken = (userId: string) => {
   return jwt.sign({ id: userId }, JWT_SECRET_KEY, { expiresIn: "1m" });
 };
@@ -43,11 +39,11 @@ const refreshAccessToken = (req: Request, res: Response) => {
   const refreshToken = req.body.refreshToken;
   if (!refreshToken) {
     // 이 경우 다시 로그인페이지로 보내서 refresh 발급받는다.
-    return res.status(400).json({ message: "Refresh token is required" });
+    return res.status(400).json({ message: "리프레시 토큰 만료" });
   }
   jwt.verify(refreshToken, JWT_REFRESH_SECRET_KEY, (err: any, user: any) => {
     if (err) {
-      return res.status(403).json({ message: "Invalid refresh token" });
+      return res.status(403).json({ message: "리프레시 토큰이 유효하지 않음" });
     }
     const accessToken = generateAccessToken(user.id);
     res.json({ accessToken });
