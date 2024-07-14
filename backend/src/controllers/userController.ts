@@ -1,6 +1,10 @@
 import { Request, Response } from "express";
 import User from "../models/User";
 import bcrypt from "bcrypt";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+} from "../middleware/authenticateJWT";
 
 export const joinUser = async (req: Request, res: Response) => {
   try {
@@ -50,8 +54,12 @@ export const loginUser = async (req: Request, res: Response) => {
     if (!isMatch) {
       return res.status(400).json({ message: "비밀번호가 일치하지 않습니다." });
     }
+    const access_token = generateAccessToken(userId);
+    const refresh_token = generateRefreshToken(userId);
 
-    return res.status(201).json({ message: "로그인 성공" });
+    return res
+      .status(201)
+      .json({ message: "로그인 성공", access_token, refresh_token });
   } catch (error) {
     return res.status(500).json({ message: "에러" });
   }
