@@ -4,12 +4,16 @@ import jwt from "jsonwebtoken";
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY || "";
 const JWT_REFRESH_SECRET_KEY = process.env.JWT_REFRESH_SECRET_KEY || "";
 
-const generateAccessToken = (userId: string) => {
-  return jwt.sign({ id: userId }, JWT_SECRET_KEY, { expiresIn: "1m" });
+// access_token 생성
+const generateAccessToken = (userId: string): string => {
+  return jwt.sign({ id: userId }, JWT_SECRET_KEY, { expiresIn: "30s" });
 };
+
+// refresh_token 생성
 const generateRefreshToken = (userId: string) => {
-  return jwt.sign({ id: userId }, JWT_REFRESH_SECRET_KEY, { expiresIn: "7d" });
+  return jwt.sign({ id: userId }, JWT_REFRESH_SECRET_KEY, { expiresIn: "1m" });
 };
+
 // JWT 토큰 검증
 const authenticateJWT = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
@@ -34,15 +38,23 @@ const authenticateJWT = (req: Request, res: Response, next: NextFunction) => {
 };
 
 // refresh_token이용해서 새로운 access_token 발급
-
 const refreshAccessToken = (req: Request, res: Response) => {
-  const refreshToken = req.body.refreshToken;
+  const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) {
     // 이 경우 다시 로그인페이지로 보내서 refresh 발급받는다.
-    return res.status(400).json({ message: "리프레시 토큰 만료" });
+    return res.status(401).json({
+      message: "리프레시 토큰이 존재하지 않습니다. 다시 로그인 해주세요.",
+    });
   }
   jwt.verify(refreshToken, JWT_REFRESH_SECRET_KEY, (err: any, user: any) => {
     if (err) {
+      // 접근 권한 없다고 처리하기
+      if (err.name === "TokenExpiredError") {
+        // 이 경우 다시 로그인페이지로 보내서 refresh 발급받는다.
+        return res
+          .status(401)
+          .json({ message: "리프레시 토큰이 만료되었습니다." });
+      }
       return res.status(403).json({ message: "리프레시 토큰이 유효하지 않음" });
     }
     const accessToken = generateAccessToken(user.id);

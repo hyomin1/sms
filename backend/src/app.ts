@@ -2,6 +2,7 @@ import "dotenv/config";
 import express, { Express, Request, Response } from "express";
 import { connectDB } from "./config/db";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import userRoutes from "./routes/users";
 import { authenticateJWT } from "./middleware/authenticateJWT";
 
@@ -16,6 +17,7 @@ app.use(
   })
 );
 app.use(express.json());
+app.use(cookieParser());
 
 connectDB();
 

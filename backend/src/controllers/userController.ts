@@ -56,10 +56,14 @@ export const loginUser = async (req: Request, res: Response) => {
     }
     const access_token = generateAccessToken(userId);
     const refresh_token = generateRefreshToken(userId);
+    // refreshToken 쿠키로 발급
+    res.cookie("refreshToken", refresh_token, {
+      httpOnly: true,
+      sameSite: "strict", // CSRF 공격방지
+      //secure:true, // HTTPS에서만 사용하도록 설정(배포 시)
+    });
 
-    return res
-      .status(201)
-      .json({ message: "로그인 성공", access_token, refresh_token });
+    return res.status(201).json({ message: "로그인 성공", access_token });
   } catch (error) {
     return res.status(500).json({ message: "에러" });
   }
