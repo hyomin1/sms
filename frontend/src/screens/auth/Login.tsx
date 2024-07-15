@@ -21,7 +21,7 @@ function Login() {
       userId,
       password,
     });
-    console.log(res.data);
+
     if (res.status === 201) {
       // 로그인 성공 시 홈으로 이동
       navigate("/home");
