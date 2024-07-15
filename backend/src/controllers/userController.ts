@@ -6,11 +6,35 @@ import {
   generateRefreshToken,
 } from "../middleware/authenticateJWT";
 
+interface MulterS3File extends Express.Multer.File {
+  location: string;
+}
+
+const defaultImg =
+  "https://image-sms.s3.ap-northeast-2.amazonaws.com/defaultProfileImg.png";
+
 export const joinUser = async (req: Request, res: Response) => {
   try {
-    const newUser = new User(req.body);
-    await newUser.save(); // save하면서 유효성 검사
-    return res.status(201).json(newUser);
+    //회원가입시 사진 선택
+    if (req.file) {
+      const file = req.file as MulterS3File;
+      await User.create({
+        ...req.body,
+        profileImg: file.location,
+      });
+      return res.status(201).json({ message: "회원가입 성공" });
+    } // 사진 선택 안한 경우
+    else {
+      console.log(req.body);
+      await User.create({
+        ...req.body,
+        profileImg: defaultImg,
+      });
+      return res.status(201).json({ message: "회원가입 성공" });
+    }
+    // const newUser = new User(req.body);
+    //await newUser.save(); // save하면서 유효성 검사
+    //return res.status(201).json(newUser);
   } catch (error: any) {
     // 중복 키 에러 코드
     if (error.code === 11000) {
