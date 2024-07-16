@@ -5,6 +5,7 @@ import {
   generateAccessToken,
   generateRefreshToken,
 } from "../middleware/authenticateJWT";
+import axios from "axios";
 
 interface MulterS3File extends Express.Multer.File {
   location: string;
@@ -93,6 +94,68 @@ export const loginUser = async (req: Request, res: Response) => {
   }
 };
 
-export const kakaoLoginUser = (req: Request, res: Response) => {};
+const kakaoOpt = {
+  clientId: process.env.KAKAO_CLIENT_ID || "",
+  clientSecret: process.env.KAKAO_CLIENT_SECRET || "",
+  redirectUri: process.env.KAKAO_REDIRECT_URI || "",
+};
+
+export const kakaoLoginUser = (req: Request, res: Response) => {
+  const kakaoLoginURL = `https://kauth.kakao.com/oauth/authorize?client_id=${kakaoOpt.clientId}&redirect_uri=${kakaoOpt.redirectUri}&response_type=code`;
+  res.redirect(kakaoLoginURL);
+};
+
+export const kakaoCallback = async (req: Request, res: Response) => {
+  try {
+    const tokenUrl = `https://kauth.kakao.com/oauth/token`;
+    const res = await axios.post(tokenUrl, null, {
+      params: {
+        grant_type: "authorization_code",
+        client_id: kakaoOpt.clientId,
+        client_secret: kakaoOpt.clientSecret,
+        redirectUri: kakaoOpt.redirectUri,
+        code: req.query.code,
+      },
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    });
+    const userUrl = `https://kapi.kakao.com/v2/user/me`;
+    const Header = {
+      headers: {
+        Authorization: `Bearer ${res.data.access_token}`,
+      },
+    };
+    const res2 = await axios.get(userUrl, Header);
+    // 카카오 로그인 성공했을때
+    if (res2.status === 200) {
+      const userId = res2.data.id;
+      const { nickname: username, profile_image: profileImg } =
+        res2.data.properties;
+      const isNew = successKakaoLogin(userId, username, profileImg);
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const successKakaoLogin = async (
+  userId: string,
+  username: string,
+  profileImg: string
+) => {
+  const user = await User.findOne({ userId });
+  // 카카오 로그인이 처음인 경우(db에 정보 저장후, 추가 정보 받게)
+  if (!user) {
+    await User.create({
+      userId,
+      username,
+      profileImg,
+    });
+    return true;
+  } else {
+    return false;
+  }
+};
 
 export const googleLoginUser = (req: Request, res: Response) => {};

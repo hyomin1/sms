@@ -15,9 +15,10 @@ function Login() {
     formState: { errors },
   } = useForm<ILogin>();
   const navigate = useNavigate();
+
   const loginUser = async (data: ILogin) => {
     const { userId, password } = data;
-    const res = await axiosApi.post("/user/login", {
+    const res = await axiosApi.post("/auth/login", {
       userId,
       password,
     });
@@ -28,9 +29,13 @@ function Login() {
     }
     localStorage.setItem("accessToken", res.data.access_token);
   };
+
+  const kakaoLogin = () => {
+    window.location.href = "http://localhost:8080/auth/kakaoLogin";
+  };
   return (
     <div className="">
-      <form onSubmit={handleSubmit(loginUser)}>
+      <form className="flex flex-col" onSubmit={handleSubmit(loginUser)}>
         <input
           {...register("userId", { required: true })}
           placeholder="아이디"
@@ -40,10 +45,13 @@ function Login() {
           placeholder="비밀번호"
           type="password"
         />
-        <button>로그인</button>
-        <button>
-          <Link to={"/register"}>회원가입</Link>
-        </button>
+        <div className="flex-col flex">
+          <button>로그인</button>
+          <button onClick={kakaoLogin}>카카오 로그인</button>
+          <button>
+            <Link to={"/register"}>회원가입</Link>
+          </button>
+        </div>
       </form>
     </div>
   );

@@ -17,7 +17,6 @@ const imageUpload = multer({
     bucket: "image-sms",
     contentType: multerS3.AUTO_CONTENT_TYPE,
     key: (req, file, callback) => {
-      console.log("d", req.file);
       callback(null, `${uuidv4()}_${file.originalname}`);
     },
     acl: "public-read",

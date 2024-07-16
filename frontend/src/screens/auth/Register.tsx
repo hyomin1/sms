@@ -41,7 +41,7 @@ function Register() {
     if (profileImg && profileImg.length > 0) {
       formData.append("file", profileImg[0]);
     }
-    const res = await axiosApi.post("/user/register", formData, {
+    const res = await axiosApi.post("/auth/register", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },

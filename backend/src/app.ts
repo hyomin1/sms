@@ -21,7 +21,7 @@ app.use(cookieParser());
 
 connectDB();
 
-app.use("/user", userRoutes);
+app.use("/auth", userRoutes);
 app.get("/protected", authenticateJWT, (req, res) => {
   res.json({ message: "access_token 인증 완료" });
 });
