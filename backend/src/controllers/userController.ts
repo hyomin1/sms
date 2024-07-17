@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import User from "../models/User";
 import bcrypt from "bcrypt";
+import crypto from "crypto";
 import {
   generateAccessToken,
   generateRefreshToken,
@@ -108,7 +109,7 @@ export const kakaoLoginUser = (req: Request, res: Response) => {
 export const kakaoCallback = async (req: Request, res: Response) => {
   try {
     const tokenUrl = `https://kauth.kakao.com/oauth/token`;
-    const res = await axios.post(tokenUrl, null, {
+    const tokenResponse = await axios.post(tokenUrl, null, {
       params: {
         grant_type: "authorization_code",
         client_id: kakaoOpt.clientId,
@@ -123,16 +124,17 @@ export const kakaoCallback = async (req: Request, res: Response) => {
     const userUrl = `https://kapi.kakao.com/v2/user/me`;
     const Header = {
       headers: {
-        Authorization: `Bearer ${res.data.access_token}`,
+        Authorization: `Bearer ${tokenResponse.data.access_token}`,
       },
     };
-    const res2 = await axios.get(userUrl, Header);
+    const userResponse = await axios.get(userUrl, Header);
     // 카카오 로그인 성공했을때
-    if (res2.status === 200) {
-      const userId = res2.data.id;
+    if (userResponse.status === 200) {
+      const userId = userResponse.data.id;
       const { nickname: username, profile_image: profileImg } =
-        res2.data.properties;
-      const isNew = successKakaoLogin(userId, username, profileImg);
+        userResponse.data.properties;
+      const url = await successKakaoLogin(userId, username, profileImg, res);
+      res.redirect(url);
     }
   } catch (error) {
     console.error(error);
@@ -142,20 +144,61 @@ export const kakaoCallback = async (req: Request, res: Response) => {
 const successKakaoLogin = async (
   userId: string,
   username: string,
-  profileImg: string
+  profileImg: string,
+  res: Response
 ) => {
-  const user = await User.findOne({ userId });
+  let baseUrl = `http://localhost:3000/kakaoLogin?isNew=`;
+  let user = await User.findOne({ userId });
   // 카카오 로그인이 처음인 경우(db에 정보 저장후, 추가 정보 받게)
   if (!user) {
+    const randomPw = crypto.randomBytes(12).toString("base64").slice(0, 12);
+    const password = await bcrypt.hash(randomPw, 10);
     await User.create({
       userId,
       username,
       profileImg,
+      password,
     });
-    return true;
+    baseUrl += `${true}&userId=${userId}`;
   } else {
-    return false;
+    const access_token = generateAccessToken(userId);
+    const state = encodeURIComponent(JSON.stringify({ access_token }));
+
+    const refresh_token = generateRefreshToken(userId);
+
+    res.cookie("refreshToken", refresh_token, {
+      httpOnly: true,
+      sameSite: "strict",
+    });
+    baseUrl += `${false}&state=${state}`;
   }
+  return baseUrl;
 };
 
 export const googleLoginUser = (req: Request, res: Response) => {};
+
+export const addInform = async (req: Request, res: Response) => {
+  try {
+    const { userId, email, gender, birth } = req.body;
+    const user = await User.findOne({ userId });
+    if (!user) {
+      return res.status(404).json({ message: "사용자를 찾을 수 없습니다." });
+    }
+    user.email = email;
+    user.gender = gender;
+    user.birth = new Date(birth);
+    await user.save();
+
+    const access_token = generateAccessToken(userId);
+    const refresh_token = generateRefreshToken(userId);
+
+    res.cookie("refreshToken", refresh_token, {
+      httpOnly: true,
+      sameSite: "strict",
+    });
+
+    return res.json({ message: "추가 정보 작성 완료", access_token });
+  } catch (error) {
+    return res.status(500).json({ message: "서버 오류" });
+  }
+};

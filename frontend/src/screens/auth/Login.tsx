@@ -27,7 +27,7 @@ function Login() {
       // 로그인 성공 시 홈으로 이동
       navigate("/home");
     }
-    localStorage.setItem("accessToken", res.data.access_token);
+    localStorage.setItem("access_token", res.data.access_token);
   };
 
   const kakaoLogin = () => {

@@ -8,6 +8,7 @@ interface IUser {
   email: string;
   gender: "male" | "female";
   profileImg?: string;
+  newKakao: boolean;
 }
 
 const emailRegex =
@@ -20,7 +21,6 @@ const userSchema = new Schema<IUser>(
     password: { type: String, required: true, minlength: 8 },
     birth: {
       type: Date,
-      required: true,
       validate: {
         validator: function (v: Date) {
           return new Date("1900-01-01") < v && v <= new Date();
@@ -30,12 +30,11 @@ const userSchema = new Schema<IUser>(
     },
     email: {
       type: String,
-      required: true,
       unique: true,
       trim: true,
       match: [emailRegex, "올바른 이메일 형식이 아닙니다."],
     },
-    gender: { type: String, required: true, enum: ["male", "female"] },
+    gender: { type: String, enum: ["male", "female"] },
     profileImg: { type: String },
   },
   {
