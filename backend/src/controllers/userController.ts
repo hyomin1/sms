@@ -91,7 +91,7 @@ export const loginUser = async (req: Request, res: Response) => {
 
     return res.status(201).json({ message: "로그인 성공", access_token });
   } catch (error) {
-    return res.status(500).json({ message: "에러" });
+    return res.status(500).json({ message: "로그인 처리 중 서버 오류" });
   }
 };
 
@@ -138,6 +138,7 @@ export const kakaoCallback = async (req: Request, res: Response) => {
     }
   } catch (error) {
     console.error(error);
+    return res.status(500).json({ message: "카카오 로그인 처리 중 오류 발생" });
   }
 };
 
