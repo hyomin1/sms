@@ -9,7 +9,7 @@ interface IAddInform {
   birth: Date;
 }
 
-function KakaoLogin() {
+function SocialLogin() {
   const location = useLocation();
   const navigate = useNavigate();
   const [isNew, setIsNew] = useState(true);
@@ -110,4 +110,4 @@ function KakaoLogin() {
   );
 }
 
-export default KakaoLogin;
+export default SocialLogin;

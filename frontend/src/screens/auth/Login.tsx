@@ -34,7 +34,9 @@ function Login() {
     window.location.href = "http://localhost:8080/auth/kakaoLogin";
   };
 
-  const googleLogin = () => {};
+  const googleLogin = () => {
+    window.location.href = "http://localhost:8080/auth/googleLogin";
+  };
   return (
     <div className="flex justify-between items-center h-screen">
       <div className="flex items-center justify-center w-[50%] h-[100%]">
