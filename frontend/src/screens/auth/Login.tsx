@@ -38,7 +38,7 @@ function Login() {
     window.location.href = "http://localhost:8080/auth/googleLogin";
   };
   return (
-    <div className="flex justify-between items-center h-screen">
+    <div className="flex items-center justify-between h-screen">
       <div className="flex items-center justify-center w-[50%] h-[100%]">
         <div className="w-40 h-40 bg-slate-800">사진</div>
       </div>
@@ -86,7 +86,7 @@ function Login() {
               {errors.userId.type === "required" && "비밀번호를 입력해주세요"}
             </span>
           )}
-          <div className="flex-col flex">
+          <div className="flex flex-col">
             <button className="bg-gradient-to-r from-[#EE5757] to-[#FE904B] w-[60%] h-12 rounded-sm hover:opacity-60 text-white font-bold text-sm mb-2">
               로그인
             </button>

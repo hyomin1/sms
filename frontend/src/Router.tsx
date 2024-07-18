@@ -4,10 +4,10 @@ import Login from "./screens/auth/Login";
 import Register from "./screens/auth/Register";
 import Home from "./screens/home/Home";
 import SocialLogin from "./screens/auth/SocialLogin";
-import CreateStudyGroup from "./screens/studyGroup/CreateStudyGroup";
-import GroupList from "./screens/studyGroup/GroupList";
+import CreateStudyGroup from "./screens/studygroup/CreateStudyGroup";
+import GroupList from "./screens/studygroup/GroupList";
 import Profile from "./screens/auth/Profile";
-import SearchGroup from "./screens/studyGroup/SearchGroup";
+import SearchGroup from "./screens/studygroup/SearchGroup";
 
 const router = createBrowserRouter([
   {
