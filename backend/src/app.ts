@@ -4,6 +4,7 @@ import { connectDB } from "./config/db";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import userRoutes from "./routes/users";
+import studyGroupRoutes from "./routes/studygroups";
 import { authenticateJWT } from "./middleware/authenticateJWT";
 
 const app: Express = express();
@@ -22,6 +23,7 @@ app.use(cookieParser());
 connectDB();
 
 app.use("/auth", userRoutes);
+app.use("/studyGroup", studyGroupRoutes);
 app.get("/protected", authenticateJWT, (req, res) => {
   res.json({ message: "access_token 인증 완료" });
 });

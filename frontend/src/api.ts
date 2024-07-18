@@ -12,7 +12,7 @@ const axiosApi = axios.create({
 const handleRequestInterceptor = (
   config: InternalAxiosRequestConfig
 ): InternalAxiosRequestConfig => {
-  const token = localStorage.getItem("accessToken");
+  const token = localStorage.getItem("access_token");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -22,6 +22,10 @@ const handleRequestInterceptor = (
 const handleResponseInterceptor = async (
   error: AxiosError
 ): Promise<AxiosResponse> => {
+  // 리프레시 토큰 만료 시 로그인창으로 리다이렉트
+  if (error.response?.status === 401) {
+    window.location.href = "/";
+  }
   const errorMsg = error.response?.data as { message: string };
   alert(errorMsg.message);
   return new Promise(() => {});

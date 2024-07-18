@@ -6,12 +6,12 @@ const JWT_REFRESH_SECRET_KEY = process.env.JWT_REFRESH_SECRET_KEY || "";
 
 // access_token 생성
 const generateAccessToken = (userId: string): string => {
-  return jwt.sign({ id: userId }, JWT_SECRET_KEY, { expiresIn: "30s" });
+  return jwt.sign({ id: userId }, JWT_SECRET_KEY, { expiresIn: "1h" });
 };
 
 // refresh_token 생성
 const generateRefreshToken = (userId: string) => {
-  return jwt.sign({ id: userId }, JWT_REFRESH_SECRET_KEY, { expiresIn: "1m" });
+  return jwt.sign({ id: userId }, JWT_REFRESH_SECRET_KEY, { expiresIn: "7d" });
 };
 
 // JWT 토큰 검증
@@ -21,14 +21,16 @@ const authenticateJWT = (req: Request, res: Response, next: NextFunction) => {
   if (authHeader) {
     // access_token 분리
     const token = authHeader.split(" ")[1];
-    jwt.verify(token, JWT_SECRET_KEY, (err, user) => {
+    jwt.verify(token, JWT_SECRET_KEY, (err, user: any) => {
       if (err) {
         // access_token 만료, client에서 refresh이용해서 재 요청
         if (err.name === "TokenExpiredError") {
+          refreshAccessToken(req, res);
           return res.status(401).json({ message: "토큰 만료" });
         }
         return res.status(403).json({ message: "유효하지 않은 토큰" });
       }
+      req.body.id = user.id;
       next();
     });
     // 토큰 없이 요청 한경우

@@ -59,8 +59,8 @@ function Register() {
     }
   };
   return (
-    <div className="flex flex-col items-center h-screen w-screen">
-      <div className="flex flex-col border border-black">
+    <div className="flex flex-col items-center h-screen w-screen px-4 py-10">
+      <div className="flex flex-col w-screen px-4 mb-4">
         <span className="font-extrabold text-[#0E4A67] text-3xl">회원가입</span>
         <span className="text-[#37677E] text-xs mt-2 font-semibold">
           이미 계정이 있으신가요?
@@ -71,7 +71,8 @@ function Register() {
       </div>
       <form
         onSubmit={handleSubmit(userRegister)}
-        className="flex border border-black"
+        className="flex
+       w-[100%]"
       >
         <div className="w-[50%]">
           <div className="flex flex-col">
@@ -196,7 +197,7 @@ function Register() {
             <input
               id="birth"
               type="date"
-              className="w-[60%] border-2 border-[#6FCF97] px-2 py-2 mb-2 rounded-md focus:outline-none focus:border-blue-500"
+              className="w-[60%] border-2 border-[#6FCF97] px-2 py-2 mb-2 rounded-md text-sm"
               {...register("birth", { required: true })}
             />
             {errors.birth && (
@@ -204,39 +205,52 @@ function Register() {
                 생일을 선택해주세요
               </span>
             )}
-          </div>
-
-          <div>
-            <label
-              htmlFor="gender"
-              className="text-xs text-[#207198] font-bold mb-1 ml-1 hover:opacity-60"
-            >
-              성별
-            </label>
             <div>
-              <input
-                type="radio"
-                id="male"
-                value="male"
-                {...register("gender", { required: true })}
-              />
-              <label htmlFor="male">남성</label>
+              <label
+                htmlFor="gender"
+                className="text-xs text-[#207198] font-bold mb-1 ml-1 hover:opacity-60"
+              >
+                성별
+              </label>
+              <div className="flex justify-between w-[60%] border-2 px-2 py-2 mb-2 rounded-md border-[#6FCF97]">
+                <div className="flex items-center">
+                  <input
+                    type="radio"
+                    id="male"
+                    value="male"
+                    {...register("gender", { required: true })}
+                  />
+                  <label
+                    htmlFor="male"
+                    className="font-semibold text-sm ml-1 text-[#207198]"
+                  >
+                    남성
+                  </label>
+                </div>
+                <div className="flex items-center">
+                  <input
+                    type="radio"
+                    id="female"
+                    value="female"
+                    {...register("gender", { required: true })}
+                  />
+                  <label
+                    htmlFor="female"
+                    className="font-semibold text-sm ml-1 text-[#207198]"
+                  >
+                    여성
+                  </label>
+                </div>
+              </div>
 
-              <input
-                type="radio"
-                id="female"
-                value="female"
-                {...register("gender", { required: true })}
-              />
-              <label htmlFor="female">여성</label>
+              {errors.gender && (
+                <span className="text-center text-[red] font-bold">
+                  성별을 선택해주세요
+                </span>
+              )}
             </div>
-
-            {errors.gender && (
-              <span className="text-center text-[red] font-bold w-[60%] text-sm">
-                성별을 선택해주세요
-              </span>
-            )}
           </div>
+
           <div className="flex flex-col">
             <label
               htmlFor="profileImg"
@@ -248,16 +262,16 @@ function Register() {
             <input
               id="profileImg"
               type="file"
-              className="w-[60%] border-2 border-[#6FCF97] px-2 py-2 mb-2 rounded-md focus:outline-none focus:border-blue-500"
+              className="w-[60%] border-2 border-[#6FCF97] px-2 py-2 mb-2 rounded-md text-sm"
               {...register("profileImg")}
               placeholder="사진"
             />
           </div>
         </div>
+        <button className="bg-gradient-to-r from-[#EE5757] to-[#FE904B] w-[60%] h-12 rounded-sm hover:opacity-60 text-white font-bold text-sm mb-2">
+          회원가입
+        </button>
       </form>
-      <button className="bg-gradient-to-r from-[#EE5757] to-[#FE904B] w-[60%] h-12 rounded-sm hover:opacity-60 text-white font-bold text-sm mb-2">
-        회원가입
-      </button>
     </div>
   );
 }

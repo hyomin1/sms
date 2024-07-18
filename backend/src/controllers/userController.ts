@@ -106,18 +106,10 @@ const successSocialLogin = async (
   res: Response
 ) => {
   let baseUrl = `http://localhost:3000/socialLogin?isNew=`;
-  let user = await User.findOne({ userId });
+  const user = await User.findOne({ userId });
   // 카카오 로그인이 처음인 경우(db에 정보 저장후, 추가 정보 받게)
   if (!user) {
-    const randomPw = crypto.randomBytes(12).toString("base64").slice(0, 12);
-    const password = await bcrypt.hash(randomPw, 10);
-    await User.create({
-      userId,
-      username,
-      profileImg,
-      password,
-    });
-    baseUrl += `${true}&userId=${userId}`;
+    baseUrl += `${true}&userId=${userId}&username=${username}&profileImg=${profileImg}`;
   } else {
     const access_token = generateAccessToken(userId);
     const state = encodeURIComponent(JSON.stringify({ access_token }));
@@ -213,15 +205,14 @@ export const googleCallback = async (req: Request, res: Response) => {
 // 소셜 로그인시 추가 정보 작성하기 위함
 export const addInform = async (req: Request, res: Response) => {
   try {
-    const { userId, email, gender, birth } = req.body;
-    const user = await User.findOne({ userId });
-    if (!user) {
-      return res.status(404).json({ message: "사용자를 찾을 수 없습니다." });
-    }
-    user.email = email;
-    user.gender = gender;
-    user.birth = new Date(birth);
-    await user.save();
+    const { userId } = req.body;
+    const randomPw = crypto.randomBytes(12).toString("base64").slice(0, 12);
+    const password = await bcrypt.hash(randomPw, 10);
+
+    await User.create({
+      ...req.body,
+      password,
+    });
 
     const access_token = generateAccessToken(userId);
     const refresh_token = generateRefreshToken(userId);
