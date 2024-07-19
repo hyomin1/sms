@@ -2,6 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import axiosApi from "../../api";
 import { Link, useNavigate } from "react-router-dom";
+import InputComponent from "../../components/InputComponent";
 
 interface ILogin {
   userId: string;
@@ -53,33 +54,22 @@ function Login() {
           </span>
         </div>
         <form className="flex flex-col mt-8" onSubmit={handleSubmit(loginUser)}>
-          <label
-            htmlFor="userId"
-            className="text-xs text-[#207198] font-bold mb-1 ml-1 hover:opacity-60"
-          >
-            아이디
-          </label>
-          <input
+          <InputComponent
             id="userId"
-            className="w-[60%] border-2 border-[#207198] px-2 py-2 mb-2 rounded-md focus:outline-none focus:border-blue-500"
-            {...register("userId", { required: true })}
+            label="아이디"
+            type="text"
+            register={register}
           />
           {errors.userId && (
             <span className="w-[60%] text-center text-[red] font-bold">
               {errors.userId.type === "required" && "아이디를 입력해주세요"}
             </span>
           )}
-          <label
-            htmlFor="pw"
-            className="text-xs text-[#207198] font-bold mb-1 ml-1 hover:opacity-60"
-          >
-            비밀번호
-          </label>
-          <input
-            id="pw"
-            className="w-[60%] border-2 border-[#207198] px-2 py-2 mb-4 rounded-md focus:outline-none focus:border-blue-500 text-md"
-            {...register("password", { required: true })}
+          <InputComponent
+            id="password"
+            label="비밀번호"
             type="password"
+            register={register}
           />
           {errors.userId && (
             <span className="text-center text-[red] font-bold w-[60%]">

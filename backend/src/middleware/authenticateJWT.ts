@@ -1,12 +1,13 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { ObjectId } from "mongodb";
+import mongoose from "mongoose";
 
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY || "";
 const JWT_REFRESH_SECRET_KEY = process.env.JWT_REFRESH_SECRET_KEY || "";
 
 // access_token 생성
-const generateAccessToken = (userId: ObjectId): string => {
+const generateAccessToken = (userId: ObjectId) => {
   return jwt.sign({ id: userId }, JWT_SECRET_KEY, { expiresIn: "1h" });
 };
 
@@ -18,7 +19,6 @@ const generateRefreshToken = (userId: ObjectId) => {
 // JWT 토큰 검증
 const authenticateJWT = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
-
   if (authHeader) {
     // access_token 분리
     const token = authHeader.split(" ")[1];
@@ -31,7 +31,8 @@ const authenticateJWT = (req: Request, res: Response, next: NextFunction) => {
         }
         return res.status(403).json({ message: "유효하지 않은 토큰" });
       }
-      req.body.id = user.id;
+
+      req.body.id = ObjectId.createFromHexString(user.id);
       next();
     });
     // 토큰 없이 요청 한경우
@@ -60,8 +61,8 @@ const refreshAccessToken = (req: Request, res: Response) => {
       }
       return res.status(403).json({ message: "리프레시 토큰이 유효하지 않음" });
     }
-    // 여기 _id로 생성하는거 확인해야함
-    console.log("토큰재발급시 user", user);
+
+    // 토큰 만료시 클라이언트에서 다시 발급받고 요청보내는 로직필요함
     const accessToken = generateAccessToken(user.id);
     res.json({ accessToken });
   });

@@ -2,6 +2,8 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import axiosApi from "../../api";
 import { Link, useNavigate } from "react-router-dom";
+import InputComponent from "../../components/InputComponent";
+import RadioComponent from "../../components/RadioComponent";
 
 interface IRegister {
   username: string;
@@ -69,72 +71,48 @@ function Register() {
           </Link>
         </span>
       </div>
+
       <form onSubmit={handleSubmit(userRegister)}>
         <div className="flex w-[100%] border border-black mt-8 justify-between">
           <div className="w-[50%] flex flex-col ">
-            <div className="flex flex-col">
-              <label
-                htmlFor="userId"
-                className="text-xs text-[#207198] font-bold mb-1 ml-1 hover:opacity-60"
-              >
-                아이디
-              </label>
-
-              <input
-                id="userId"
-                className="border-2 w-[60%] border-[#6FCF97] px-2 py-2 mb-2 rounded-md focus:outline-none focus:border-blue-500"
-                {...register("userId", { required: true, minLength: 6 })}
-              />
-              {errors.userId && (
-                <span className="text-center text-[red] font-bold w-[60%] text-sm">
-                  {errors.userId.type === "required" && "아이디를 입력해주세요"}
-                  {errors.userId.type === "minLength" &&
-                    "최소 6글자 이상 입력해주세요"}
-                </span>
-              )}
-            </div>
-            <div className="flex flex-col">
-              <label
-                htmlFor="username"
-                className="text-xs text-[#207198] font-bold mb-1 ml-1 hover:opacity-60"
-              >
-                이름
-              </label>
-
-              <input
-                id="username"
-                className="w-[60%] border-2 border-[#6FCF97] px-2 py-2 mb-2 rounded-md focus:outline-none focus:border-blue-500"
-                {...register("username", { required: true })}
-              />
-              {errors.username && (
-                <span className="text-center text-[red] font-bold w-[60%] text-sm">
-                  이름을 입력해주세요
-                </span>
-              )}
-            </div>
-            <div className="flex flex-col">
-              <label
-                htmlFor="password"
-                className="text-xs text-[#207198] font-bold mb-1 ml-1 hover:opacity-60"
-              >
-                비밀번호
-              </label>
-
-              <input
-                id="password"
-                type="password"
-                className="w-[60%] border-2 border-[#6FCF97] px-2 py-2 mb-2 rounded-md focus:outline-none focus:border-blue-500"
-                {...register("password", { required: true, minLength: 8 })}
-              />
-              {errors.password && (
-                <span className="text-center text-[red] font-bold w-[60%] text-sm">
-                  {errors.password.type === "required" &&
-                    "비밀번호를 입력해주세요"}
-                  {errors.password.type === "minLength" &&
-                    "최소 8글자 이상 입력해주세요"}
-                </span>
-              )}
-            </div>
+            <InputComponent
+              id="userId"
+              label="아이디"
+              type="text"
+              register={register}
+            />
+            {errors.userId && (
+              <span className="text-center text-[red] font-bold w-[60%] text-sm">
+                {errors.userId.type === "required" && "아이디를 입력해주세요"}
+                {errors.userId.type === "minLength" &&
+                  "최소 6글자 이상 입력해주세요"}
+              </span>
+            )}
+            <InputComponent
+              id="username"
+              label="이름"
+              type="text"
+              register={register}
+            />
+            {errors.username && (
+              <span className="text-center text-[red] font-bold w-[60%] text-sm">
+                이름을 입력해주세요
+              </span>
+            )}
+            <InputComponent
+              id="password"
+              label="비밀번호"
+              type="password"
+              register={register}
+            />
+            {errors.password && (
+              <span className="text-center text-[red] font-bold w-[60%] text-sm">
+                {errors.password.type === "required" &&
+                  "비밀번호를 입력해주세요"}
+                {errors.password.type === "minLength" &&
+                  "최소 8글자 이상 입력해주세요"}
+              </span>
+            )}
             <div className="flex flex-col">
               <label
                 htmlFor="confirmPassword"
@@ -163,107 +141,51 @@ function Register() {
             </div>
           </div>
           <div className="w-[50%]">
-            <div className="flex flex-col">
-              <label
-                htmlFor="email"
-                className="text-xs text-[#207198] font-bold mb-1 ml-1 hover:opacity-60"
-              >
-                이메일
-              </label>
+            <InputComponent
+              id="email"
+              label="이메일"
+              type="text"
+              register={register}
+            />
+            {errors.email && (
+              <span className="text-center text-[red] font-bold w-[60%] text-sm">
+                이메일을 입력해주세요
+              </span>
+            )}
+            <RadioComponent
+              id="gender"
+              label="성별"
+              options={[
+                { value: "male", label: "남성" },
+                { value: "female", label: "여성" },
+              ]}
+              register={register}
+            />
 
-              <input
-                id="email"
-                {...register("email", { required: true })}
-                className="w-[60%] border-2 border-[#6FCF97] px-2 py-2 mb-2 rounded-md focus:outline-none focus:border-blue-500"
-              />
-              {errors.email && (
-                <span className="text-center text-[red] font-bold w-[60%] text-sm">
-                  이메일을 입력해주세요
-                </span>
-              )}
-            </div>
+            <InputComponent
+              id="birth"
+              label="생년월일"
+              type="date"
+              register={register}
+            />
+            {errors.birth && (
+              <span className="text-center text-[red] font-bold w-[60%] text-sm">
+                생일을 선택해주세요
+              </span>
+            )}
 
-            <div className="flex flex-col">
-              <label
-                htmlFor="birth"
-                className="text-xs text-[#207198] font-bold mb-1 ml-1 hover:opacity-60"
-              >
-                생년월일
-              </label>
+            {errors.gender && (
+              <span className="text-center text-[red] font-bold">
+                성별을 선택해주세요
+              </span>
+            )}
 
-              <input
-                id="birth"
-                type="date"
-                className="w-[60%] border-2 border-[#6FCF97] px-2 py-2 mb-2 rounded-md text-sm"
-                {...register("birth", { required: true })}
-              />
-              {errors.birth && (
-                <span className="text-center text-[red] font-bold w-[60%] text-sm">
-                  생일을 선택해주세요
-                </span>
-              )}
-              <div>
-                <label
-                  htmlFor="gender"
-                  className="text-xs text-[#207198] font-bold mb-1 ml-1 hover:opacity-60"
-                >
-                  성별
-                </label>
-                <div className="flex justify-between w-[60%] border-2 px-2 py-2 mb-2 rounded-md border-[#6FCF97]">
-                  <div className="flex items-center">
-                    <input
-                      type="radio"
-                      id="male"
-                      value="male"
-                      {...register("gender", { required: true })}
-                    />
-                    <label
-                      htmlFor="male"
-                      className="font-semibold text-sm ml-1 text-[#207198]"
-                    >
-                      남성
-                    </label>
-                  </div>
-                  <div className="flex items-center">
-                    <input
-                      type="radio"
-                      id="female"
-                      value="female"
-                      {...register("gender", { required: true })}
-                    />
-                    <label
-                      htmlFor="female"
-                      className="font-semibold text-sm ml-1 text-[#207198]"
-                    >
-                      여성
-                    </label>
-                  </div>
-                </div>
-
-                {errors.gender && (
-                  <span className="text-center text-[red] font-bold">
-                    성별을 선택해주세요
-                  </span>
-                )}
-              </div>
-            </div>
-
-            <div className="flex flex-col">
-              <label
-                htmlFor="profileImg"
-                className="text-xs text-[#207198] font-bold mb-1 ml-1 hover:opacity-60"
-              >
-                프로필 이미지
-              </label>
-
-              <input
-                id="profileImg"
-                type="file"
-                className="w-[60%] border-2 border-[#6FCF97] px-2 py-2 mb-2 rounded-md text-sm"
-                {...register("profileImg")}
-                placeholder="사진"
-              />
-            </div>
+            <InputComponent
+              id="profileImg"
+              type="file"
+              label="프로필 이미지"
+              register={register}
+            />
           </div>
         </div>
         <button>회원가입</button>

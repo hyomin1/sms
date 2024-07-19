@@ -2,13 +2,14 @@ import mongoose, { model, ObjectId, Schema } from "mongoose";
 
 const ObjectId = Schema.Types.ObjectId;
 
+// category : string배열로 바꾸기, 지금은 임시용
 interface IStudyGroup {
   masterId: mongoose.Types.ObjectId;
   chatRoomId: mongoose.Types.ObjectId;
   groupName: string;
   members: mongoose.Types.ObjectId[];
   applicants: mongoose.Types.ObjectId[];
-  category: string[];
+  category: string;
   maxCapacity: number;
   isOnline: boolean;
   minAge: number;
@@ -23,7 +24,7 @@ const studyGroupSchema = new Schema<IStudyGroup>({
   groupName: { type: String, required: true },
   members: [{ type: ObjectId, ref: "User" }],
   applicants: [{ type: ObjectId, ref: "User" }],
-  category: [{ type: String, required: true }],
+  category: { type: String, required: true },
   maxCapacity: { type: Number, required: true },
   isOnline: { type: Boolean, default: false },
   minAge: { type: Number },

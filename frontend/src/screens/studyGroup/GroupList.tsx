@@ -1,23 +1,16 @@
 import React, { useEffect, useState } from "react";
 import axiosApi from "../../api";
-
-interface IStudyGroup {
-  masterId: string;
-  groupName: string;
-  gender: "male" | "female" | "any";
-  maxCapacity: number;
-  minAge: number;
-  maxAge: number;
-  region: string;
-  isOnline: boolean;
-}
+import GroupListComponent from "../../components/GroupListComponent";
+import { IStudyGroup } from "../../interfaces/studygroup";
 
 function GroupList() {
-  const [createdStudyGroups, setCreatedStudyGroups] = useState<IStudyGroup>();
-  const [joinedStudyGroups, setJoinedStudyGroups] = useState<IStudyGroup>();
+  const [createdStudyGroups, setCreatedStudyGroups] = useState<IStudyGroup[]>();
+  const [joinedStudyGroups, setJoinedStudyGroups] = useState<IStudyGroup[]>();
   const getStudyGroup = async () => {
     const res = await axiosApi.get("/studyGroup");
-    console.log(res.data);
+
+    setCreatedStudyGroups(res.data.createdStudyGroups);
+    setJoinedStudyGroups(res.data.joinedStudyGroups);
   };
   useEffect(() => {
     getStudyGroup();
@@ -28,12 +21,14 @@ function GroupList() {
         <h1>내가 만든 스터디</h1>
         <div>
           <span>스터디 목록</span>
+          <GroupListComponent studyGroups={createdStudyGroups || []} />
         </div>
       </div>
       <div className="flex flex-col border border-black w-[50%] items-center">
         내가 참여한 스터디
         <div>
           <span>스터디 목록</span>
+          <GroupListComponent studyGroups={joinedStudyGroups || []} />
         </div>
       </div>
     </div>

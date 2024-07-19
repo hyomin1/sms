@@ -25,6 +25,7 @@ const handleResponseInterceptor = async (
   // 리프레시 토큰 만료 시 로그인창으로 리다이렉트
   if (error.response?.status === 401) {
     window.location.href = "/";
+  } else if (error.response?.status === 403) {
   }
   const errorMsg = error.response?.data as { message: string };
   alert(errorMsg.message);

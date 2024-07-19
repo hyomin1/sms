@@ -208,7 +208,6 @@ export const googleCallback = async (req: Request, res: Response) => {
 // 소셜 로그인시 추가 정보 작성하기 위함
 export const addInform = async (req: Request, res: Response) => {
   try {
-    const { userId } = req.body;
     const randomPw = crypto.randomBytes(12).toString("base64").slice(0, 12);
     const password = await bcrypt.hash(randomPw, 10);
 
