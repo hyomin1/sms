@@ -7,7 +7,6 @@ import {
   generateRefreshToken,
 } from "../middleware/authenticateJWT";
 import axios from "axios";
-
 interface MulterS3File extends Express.Multer.File {
   location: string;
 }
@@ -71,12 +70,15 @@ export const loginUser = async (req: Request, res: Response) => {
 
     // 비밀번호 일치 여부
     const userPassword = user?.password || "";
+    const user_Id = user?._id || "";
+    console.log(user_Id);
+
     const isMatch = await bcrypt.compare(password, userPassword);
     if (!isMatch) {
       return res.status(400).json({ message: "비밀번호가 일치하지 않습니다." });
     }
-    const access_token = generateAccessToken(userId);
-    const refresh_token = generateRefreshToken(userId);
+    const access_token = generateAccessToken(user_Id);
+    const refresh_token = generateRefreshToken(user_Id);
 
     // refreshToken 쿠키로 발급
     setRefreshTokenCookie(res, refresh_token);
@@ -111,9 +113,10 @@ const successSocialLogin = async (
   if (!user) {
     baseUrl += `${true}&userId=${userId}&username=${username}&profileImg=${profileImg}`;
   } else {
-    const access_token = generateAccessToken(userId);
+    const user_Id = user?._id || "";
+    const access_token = generateAccessToken(user_Id);
     const state = encodeURIComponent(JSON.stringify({ access_token }));
-    const refresh_token = generateRefreshToken(userId);
+    const refresh_token = generateRefreshToken(user_Id);
 
     setRefreshTokenCookie(res, refresh_token);
 
@@ -209,13 +212,14 @@ export const addInform = async (req: Request, res: Response) => {
     const randomPw = crypto.randomBytes(12).toString("base64").slice(0, 12);
     const password = await bcrypt.hash(randomPw, 10);
 
-    await User.create({
+    const user = await User.create({
       ...req.body,
       password,
     });
+    const user_Id = user?._id || "";
 
-    const access_token = generateAccessToken(userId);
-    const refresh_token = generateRefreshToken(userId);
+    const access_token = generateAccessToken(user_Id);
+    const refresh_token = generateRefreshToken(user_Id);
 
     setRefreshTokenCookie(res, refresh_token);
 

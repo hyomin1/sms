@@ -266,6 +266,7 @@ function Register() {
             </div>
           </div>
         </div>
+        <button>회원가입</button>
       </form>
     </div>
   );

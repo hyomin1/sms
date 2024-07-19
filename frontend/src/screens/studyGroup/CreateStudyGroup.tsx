@@ -1,6 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import axiosApi from "../../api";
+import { useNavigate } from "react-router-dom";
 
 interface IStudyGroup {
   groupName: string;
@@ -14,23 +15,32 @@ interface IStudyGroup {
 
 function CreateStudyGroup() {
   const { register, handleSubmit } = useForm<IStudyGroup>();
+  const navigate = useNavigate();
+
   const createGroup = async (data: IStudyGroup) => {
-    const { groupName, region, gender, maxCapacity, isOnline } = data;
-    console.log(data);
+    const { groupName, region, gender, maxCapacity, isOnline, minAge, maxAge } =
+      data;
+
     const res = await axiosApi.post("/studyGroup/create", {
       groupName,
       region,
       gender,
       maxCapacity,
       isOnline,
+      minAge,
+      maxAge,
     });
-    console.log(res.data);
+    if (res.status === 200) {
+      navigate("/home");
+    }
   };
   return (
     <div>
-      <div>스터디 생성</div>
-      <div>
-        <form onSubmit={handleSubmit(createGroup)} className="flex flex-col">
+      <div className="flex justify-center w-[100%]">
+        <form
+          onSubmit={handleSubmit(createGroup)}
+          className="flex flex-col w-[70%] items-center"
+        >
           <label
             htmlFor="groupName"
             className="text-xs text-[#207198] font-bold mb-1 ml-1 hover:opacity-60"
@@ -158,6 +168,12 @@ function CreateStudyGroup() {
           >
             최소나이
           </label>
+          <input
+            type="number"
+            className="w-[60%] border-2 border-[#6FCF97] px-2 py-2 mb-2 rounded-md focus:outline-none focus:border-blue-500"
+            id="minAge"
+            {...register("minAge")}
+          />
 
           <label
             htmlFor="maxAge"
@@ -165,8 +181,14 @@ function CreateStudyGroup() {
           >
             최대나이
           </label>
+          <input
+            type="number"
+            className="w-[60%] border-2 border-[#6FCF97] px-2 py-2 mb-2 rounded-md focus:outline-none focus:border-blue-500"
+            id="maxAge"
+            {...register("maxAge")}
+          />
 
-          <button className="bg-gradient-to-r from-[#EE5757] to-[#FE904B] w-[60%] h-12 rounded-sm hover:opacity-60 text-white font-bold text-sm mb-2">
+          <button className="bg-gradient-to-r from-[#EE5757] to-[#FE904B] w-[60%] h-12 rounded-md hover:opacity-60 text-white font-bold text-sm mb-2">
             생성
           </button>
         </form>

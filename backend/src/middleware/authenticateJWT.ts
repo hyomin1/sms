@@ -1,16 +1,17 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import { ObjectId } from "mongodb";
 
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY || "";
 const JWT_REFRESH_SECRET_KEY = process.env.JWT_REFRESH_SECRET_KEY || "";
 
 // access_token 생성
-const generateAccessToken = (userId: string): string => {
+const generateAccessToken = (userId: ObjectId): string => {
   return jwt.sign({ id: userId }, JWT_SECRET_KEY, { expiresIn: "1h" });
 };
 
 // refresh_token 생성
-const generateRefreshToken = (userId: string) => {
+const generateRefreshToken = (userId: ObjectId) => {
   return jwt.sign({ id: userId }, JWT_REFRESH_SECRET_KEY, { expiresIn: "7d" });
 };
 
@@ -59,6 +60,8 @@ const refreshAccessToken = (req: Request, res: Response) => {
       }
       return res.status(403).json({ message: "리프레시 토큰이 유효하지 않음" });
     }
+    // 여기 _id로 생성하는거 확인해야함
+    console.log("토큰재발급시 user", user);
     const accessToken = generateAccessToken(user.id);
     res.json({ accessToken });
   });

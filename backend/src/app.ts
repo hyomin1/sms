@@ -23,7 +23,7 @@ app.use(cookieParser());
 connectDB();
 
 app.use("/auth", userRoutes);
-app.use("/studyGroup", studyGroupRoutes);
+app.use("/studyGroup", authenticateJWT, studyGroupRoutes);
 app.get("/protected", authenticateJWT, (req, res) => {
   res.json({ message: "access_token 인증 완료" });
 });
