@@ -8,7 +8,6 @@ interface IUser {
   email: string;
   gender: "male" | "female";
   profileImg?: string;
-  newKakao: boolean;
 }
 
 const emailRegex =

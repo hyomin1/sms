@@ -71,7 +71,6 @@ export const loginUser = async (req: Request, res: Response) => {
     // 비밀번호 일치 여부
     const userPassword = user?.password || "";
     const user_Id = user?._id || "";
-    console.log(user_Id);
 
     const isMatch = await bcrypt.compare(password, userPassword);
     if (!isMatch) {
@@ -86,6 +85,26 @@ export const loginUser = async (req: Request, res: Response) => {
     return res.status(201).json({ message: "로그인 성공", access_token });
   } catch (error) {
     return res.status(500).json({ message: "로그인 처리 중 서버 오류" });
+  }
+};
+
+export const getUser = async (req: Request, res: Response) => {
+  const { id } = req.body;
+  console.log(req.body);
+  try {
+    const user = await User.findOne({ _id: id }).select(
+      "username gender birth profileImg email"
+    );
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ message: "해당 유저가 존재하지 않습니다." });
+    }
+    res.status(200).json({ message: "유저 정보 조회 성공", user });
+  } catch (error) {
+    console.error("유저 정보 조회 중 에러", error);
+    res.status(500).json({ message: "유저 정보 조회 실패" });
   }
 };
 

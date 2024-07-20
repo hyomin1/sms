@@ -7,13 +7,16 @@ interface IStudyGroup {
   masterId: mongoose.Types.ObjectId;
   chatRoomId: mongoose.Types.ObjectId;
   groupName: string;
+  description: string;
   members: mongoose.Types.ObjectId[];
   applicants: mongoose.Types.ObjectId[];
   category: string;
   maxCapacity: number;
   isOnline: boolean;
-  minAge: number;
-  maxAge: number;
+  ageRange: {
+    min: number;
+    max: number;
+  };
   region: string;
   gender: "male" | "female | any";
   calendarId: mongoose.Types.ObjectId[];
@@ -22,13 +25,16 @@ interface IStudyGroup {
 const studyGroupSchema = new Schema<IStudyGroup>({
   masterId: { type: ObjectId, ref: "User", required: true },
   groupName: { type: String, required: true },
+  description: { type: String, required: true },
   members: [{ type: ObjectId, ref: "User" }],
   applicants: [{ type: ObjectId, ref: "User" }],
   category: { type: String, required: true },
   maxCapacity: { type: Number, required: true },
   isOnline: { type: Boolean, default: false },
-  minAge: { type: Number },
-  maxAge: { type: Number },
+  ageRange: {
+    min: { type: Number, required: true },
+    max: { type: Number, required: true },
+  },
   region: { type: String, required: true },
   gender: { type: String, enum: ["male", "female", "any"], required: true },
 

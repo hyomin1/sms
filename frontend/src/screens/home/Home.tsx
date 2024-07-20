@@ -22,7 +22,7 @@ function Home() {
           to={"/groupList"}
           className="w-[25%] flex justify-center items-center  hover:opacity-60 font-bold border border-black"
         >
-          그룹 조회
+          그룹 관리
         </Link>
 
         <Link

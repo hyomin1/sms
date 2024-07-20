@@ -3,35 +3,21 @@ import SelectBoxComponent from "../../components/SelectBoxComponent";
 import axiosApi from "../../api";
 import { IStudyGroup } from "../../interfaces/studygroup";
 import GroupListComponent from "../../components/GroupListComponent";
+import { regionOptions } from "../../constants/regions";
+import { IoSearchOutline } from "react-icons/io5";
 
 function SearchGroup() {
   const genderOptions = ["남", "여", "성별무관"];
   const onlineOptions = ["온라인", "오프라인"];
-  const regionOptions = [
-    "서울특별시",
-    "부산광역시",
-    "대구광역시",
-    "인천광역시",
-    "광주광역시",
-    "대전광역시",
-    "울산광역시",
-    "경기도",
-    "강원도",
-    "충청북도",
-    "충청남도",
-    "전라북도",
-    "전라남도",
-    "경상북도",
-    "경상남도",
-    "제주도",
-  ];
+
   const [gender, setGender] = useState<string>();
   const [isOnline, setIsOnline] = useState<string>();
   const [region, setRegion] = useState<string>();
   const [category, setCategory] = useState<string>();
 
   const [groups, setGroups] = useState<IStudyGroup[]>();
-  const searchGroup = async () => {
+  const searchGroup = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     const res = await axiosApi.post("/studyGroup/search", {
       gender,
       isOnline,
@@ -50,37 +36,50 @@ function SearchGroup() {
       case "여":
         setGender("female");
         break;
-      default:
+      case "성별무관":
         setGender("any");
+        break;
+      default:
+        setGender(undefined);
         break;
     }
   };
+
   const handleOnlineChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
     if (value === "온라인") {
       setIsOnline("true");
     } else if (value === "오프라인") setIsOnline("false");
-    else setIsOnline("");
+    else setIsOnline(undefined);
   };
-  console.log(category);
+
   const handleRegionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setRegion(e.target.value);
+    if (e.target.value === "선택안함") setRegion(undefined);
   };
+
   const handleCategoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCategory(e.target.value);
   };
+
   return (
-    <div className="flex flex-col">
-      <div className="flex">
+    <div className="flex flex-col items-center">
+      <form
+        onSubmit={searchGroup}
+        className="flex w-[50%] mt-16 border-2 border-[#207198] rounded-xl p-3"
+      >
         <input
+          className="w-full focus:outline-none"
           placeholder="카테고리 입력"
           onChange={handleCategoryChange}
           required
           value={category}
         />
-        <button onClick={searchGroup}>검색</button>
-      </div>
-      <div className="flex">
+        <button type="submit">
+          <IoSearchOutline className="w-6 h-6 hover:opacity-60" />
+        </button>
+      </form>
+      <div className="flex w-[50%]">
         <SelectBoxComponent
           label="성별"
           options={genderOptions}
@@ -96,7 +95,9 @@ function SearchGroup() {
           options={regionOptions}
           onChange={handleRegionChange}
         />
-        <GroupListComponent studyGroups={groups || []} />
+      </div>
+      <div className="w-[50%]">
+        <GroupListComponent label="신청" studyGroups={groups || []} />
       </div>
     </div>
   );

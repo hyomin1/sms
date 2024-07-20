@@ -6,8 +6,9 @@ import Home from "./screens/home/Home";
 import SocialLogin from "./screens/auth/SocialLogin";
 import CreateStudyGroup from "./screens/studygroup/CreateStudyGroup";
 import GroupList from "./screens/studygroup/GroupList";
-import Profile from "./screens/auth/Profile";
+import Profile from "./screens/user/Profile";
 import SearchGroup from "./screens/studygroup/SearchGroup";
+import Users from "./screens/user/Users";
 
 const router = createBrowserRouter([
   {
@@ -47,6 +48,10 @@ const router = createBrowserRouter([
       {
         path: "searchGroup",
         element: <SearchGroup />,
+      },
+      {
+        path: "manageUser",
+        element: <Users />,
       },
     ],
   },

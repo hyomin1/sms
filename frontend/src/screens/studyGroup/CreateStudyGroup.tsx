@@ -1,13 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import axiosApi from "../../api";
 import { useNavigate } from "react-router-dom";
 import InputComponent from "../../components/InputComponent";
 import RadioComponent from "../../components/RadioComponent";
+import SelectBoxComponent from "../../components/SelectBoxComponent";
+import { regionOptions } from "../../constants/regions";
 
 interface IStudyGroup {
   groupName: string;
   region: string;
+  description: string;
   gender: "male" | "female" | "any";
   maxCapacity: number;
   minAge: number;
@@ -19,11 +22,16 @@ interface IStudyGroup {
 function CreateStudyGroup() {
   const { register, handleSubmit } = useForm<IStudyGroup>();
   const navigate = useNavigate();
+  const [region, setRegion] = useState<string>();
+
+  const handleRegionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setRegion(e.target.value);
+  };
 
   const createGroup = async (data: IStudyGroup) => {
     const {
       groupName,
-      region,
+      description,
       gender,
       maxCapacity,
       isOnline,
@@ -34,6 +42,7 @@ function CreateStudyGroup() {
 
     const res = await axiosApi.post("/studyGroup/create", {
       groupName,
+      description,
       region,
       gender,
       maxCapacity,
@@ -60,11 +69,18 @@ function CreateStudyGroup() {
             register={register}
           />
           <InputComponent
-            id="region"
-            label="스터디 장소"
+            id="description"
+            label="스터디 설명"
             type="text"
             register={register}
           />
+          <SelectBoxComponent
+            label="지역"
+            options={regionOptions}
+            onChange={handleRegionChange}
+            isRequired={true}
+          />
+
           <InputComponent
             id="category"
             label="스터디 주제"
