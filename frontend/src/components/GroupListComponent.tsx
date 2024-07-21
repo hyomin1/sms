@@ -10,6 +10,10 @@ interface GroupList {
 
 function GroupListComponent({ studyGroups, label }: GroupList) {
   const navigate = useNavigate();
+
+  const goStudy = (groupId: string) => {
+    navigate(`/study/${groupId}`);
+  };
   const applyGroup = async (group: IStudyGroup) => {
     if (label === "신청") {
       const res = await axiosApi.post("/studyGroup/join", {
@@ -26,7 +30,7 @@ function GroupListComponent({ studyGroups, label }: GroupList) {
         });
       }
     } else if (label === "스터디") {
-      navigate(`/study/${group._id}`);
+      goStudy(group._id);
     }
   };
 
@@ -64,6 +68,14 @@ function GroupListComponent({ studyGroups, label }: GroupList) {
               >
                 {label}
               </button>
+              {label === "관리" && (
+                <button
+                  onClick={() => goStudy(group._id)}
+                  className="bg-gradient-to-r from-[#EE5757] to-[#FE904B] w-[20%] h-6 rounded-sm hover:opacity-60 text-white font-bold text-sm mt-2"
+                >
+                  스터디
+                </button>
+              )}
             </div>
           </div>
         ))
