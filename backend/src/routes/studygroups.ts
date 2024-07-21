@@ -3,6 +3,7 @@ import {
   acceptGroupUser,
   createStudyGroup,
   denyGroupUser,
+  getStudyGroup,
   getStudyGroups,
   joinStudyGroup,
   manageGroup,
@@ -12,6 +13,7 @@ import {
 const router = express.Router();
 
 router.get("/", getStudyGroups);
+router.get("/:groupId", getStudyGroup);
 
 router.post("/manage", manageGroup);
 router.post("/create", createStudyGroup);

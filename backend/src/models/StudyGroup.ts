@@ -18,7 +18,7 @@ interface IStudyGroup {
     max: number;
   };
   region: string;
-  gender: "male" | "female | any";
+  gender: "남성" | "여성" | "성별 무관";
   calendarId: mongoose.Types.ObjectId[];
 }
 
@@ -36,7 +36,7 @@ const studyGroupSchema = new Schema<IStudyGroup>({
     max: { type: Number, required: true },
   },
   region: { type: String, required: true },
-  gender: { type: String, enum: ["male", "female", "any"], required: true },
+  gender: { type: String, enum: ["남성", "여성", "성별 무관"], required: true },
 
   //   calendarId: [{ type: ObjectId, ref: "Calendar" }],
   //   chatRoomId: [{ type: ObjectId, ref: "ChatRoom"}],

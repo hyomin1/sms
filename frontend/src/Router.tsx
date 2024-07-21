@@ -9,6 +9,7 @@ import GroupList from "./screens/studygroup/GroupList";
 import Profile from "./screens/user/Profile";
 import SearchGroup from "./screens/studygroup/SearchGroup";
 import Users from "./screens/user/Users";
+import StudyRoom from "./screens/studygroup/StudyRoom";
 
 const router = createBrowserRouter([
   {
@@ -52,6 +53,10 @@ const router = createBrowserRouter([
       {
         path: "manageUser",
         element: <Users />,
+      },
+      {
+        path: "study/:groupId",
+        element: <StudyRoom />,
       },
     ],
   },

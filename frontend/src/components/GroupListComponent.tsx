@@ -25,6 +25,8 @@ function GroupListComponent({ studyGroups, label }: GroupList) {
           state: { users: res.data.users, groupId: group._id },
         });
       }
+    } else if (label === "스터디") {
+      navigate(`/study/${group._id}`);
     }
   };
 
@@ -45,13 +47,16 @@ function GroupListComponent({ studyGroups, label }: GroupList) {
             </div>
             <div className="flex justify-between items-center">
               <div>
-                <span>{group.description}</span>
-                <span>{group.region}</span>
-
-                <span>{group.gender}</span>
-                <span>
-                  {group.ageRange.min}~{group.ageRange.max}
+                <span className="font-semibold text-xs">
+                  {group.description}
                 </span>
+                <div className="flex justify-around">
+                  <span className="mr-4">{group.region}</span>
+                  <span className="mr-4">{group.gender}</span>
+                  <span>
+                    {group.ageRange.min}세~{group.ageRange.max}세
+                  </span>
+                </div>
               </div>
               <button
                 onClick={() => applyGroup(group)}

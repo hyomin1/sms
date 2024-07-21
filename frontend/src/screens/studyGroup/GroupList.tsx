@@ -34,7 +34,7 @@ function GroupList() {
         </h1>
         <div className="w-full">
           <GroupListComponent
-            label="현황보기"
+            label="스터디"
             studyGroups={joinedStudyGroups || []}
           />
         </div>

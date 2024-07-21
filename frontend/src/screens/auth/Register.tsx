@@ -12,9 +12,10 @@ interface IRegister {
   confirmPassword: string;
   birth: Date;
   email: string;
-  gender: "male" | "female";
+  gender: "남성" | "여성";
   profileImg?: string;
 }
+
 function Register() {
   const {
     register,
@@ -31,6 +32,7 @@ function Register() {
   const userRegister = async (data: IRegister) => {
     const { userId, username, email, password, gender, birth, profileImg } =
       data;
+    console.log(userId);
     const formData = new FormData();
     formData.append("userId", userId);
     formData.append("username", username);
@@ -55,13 +57,14 @@ function Register() {
       setValue("userId", "");
       setValue("password", "");
       setValue("birth", new Date());
-      setValue("gender", "male");
+      setValue("gender", "남성");
 
       navigate("/");
     }
   };
+
   return (
-    <div className="flex flex-col w-screen h-screen px-4 py-10 ">
+    <div className="flex flex-col w-screen h-screen px-4 py-10">
       <div className="flex flex-col w-screen mb-4">
         <span className="font-extrabold text-[#0E4A67] text-3xl">회원가입</span>
         <span className="text-[#37677E] text-xs mt-2 font-semibold">
@@ -74,7 +77,7 @@ function Register() {
 
       <form onSubmit={handleSubmit(userRegister)}>
         <div className="flex w-[100%] border border-black mt-8 justify-between">
-          <div className="w-[50%] flex flex-col ">
+          <div className="w-[50%] flex flex-col">
             <InputComponent
               id="userId"
               label="아이디"
@@ -120,7 +123,6 @@ function Register() {
               >
                 비밀번호 확인
               </label>
-
               <input
                 id="confirmPassword"
                 type="password"
@@ -156,12 +158,11 @@ function Register() {
               id="gender"
               label="성별"
               options={[
-                { value: "male", label: "남성" },
-                { value: "female", label: "여성" },
+                { value: "남성", label: "남성" },
+                { value: "여성", label: "여성" },
               ]}
               register={register}
             />
-
             <InputComponent
               id="birth"
               label="생년월일"
@@ -173,22 +174,26 @@ function Register() {
                 생일을 선택해주세요
               </span>
             )}
-
             {errors.gender && (
               <span className="text-center text-[red] font-bold">
                 성별을 선택해주세요
               </span>
             )}
-
             <InputComponent
               id="profileImg"
               type="file"
               label="프로필 이미지"
               register={register}
+              required={false}
             />
           </div>
         </div>
-        <button>회원가입</button>
+        <button
+          type="submit"
+          className="mt-4 bg-blue-500 text-white py-2 px-4 rounded"
+        >
+          회원가입
+        </button>
       </form>
     </div>
   );

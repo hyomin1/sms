@@ -6,7 +6,7 @@ interface IUser {
   password: string;
   birth: Date;
   email: string;
-  gender: "male" | "female";
+  gender: "남성" | "여성";
   profileImg?: string;
 }
 
@@ -33,7 +33,7 @@ const userSchema = new Schema<IUser>(
       trim: true,
       match: [emailRegex, "올바른 이메일 형식이 아닙니다."],
     },
-    gender: { type: String, enum: ["male", "female"] },
+    gender: { type: String, enum: ["남성", "여성"] },
     profileImg: { type: String },
   },
   {

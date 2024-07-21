@@ -1,7 +1,7 @@
 export interface ApplicantUsers {
   _id: string;
   username: string;
-  gender: "male" | "female" | "any";
+  gender: "남성" | "여성";
   birth: Date;
   profileImg: string;
 }

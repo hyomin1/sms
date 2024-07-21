@@ -3,6 +3,7 @@ import multer from "multer";
 import {
   addInform,
   getUser,
+  getUsers,
   googleCallback,
   googleLoginUser,
   joinUser,
@@ -21,6 +22,7 @@ const upload = multer();
 router.post("/register", imageUpload.single("file"), joinUser);
 router.post("/login", loginUser);
 router.post("/addInform", addInform);
+router.post("/users", getUsers);
 
 router.get("/kakaoLogin", kakaoLoginUser);
 router.get("/googleLogin", googleLoginUser);

@@ -2,10 +2,12 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
 import axiosApi from "../../api";
+import InputComponent from "../../components/InputComponent";
+import RadioComponent from "../../components/RadioComponent";
 
 interface IAddInform {
   email: string;
-  gender: "male" | "female";
+  gender: "남성" | "여성";
   birth: Date;
 }
 interface User {
@@ -87,80 +89,39 @@ function SocialLogin() {
           className="flex flex-col mt-8"
           onSubmit={handleSubmit(completeForm)}
         >
-          <label
-            htmlFor="email"
-            className="text-xs text-[#207198] font-bold mb-1 ml-1 hover:opacity-60"
-          >
-            이메일
-          </label>
-
-          <input
+          <InputComponent
             id="email"
-            className="w-[60%] border-2 border-[#207198] px-2 py-2 mb-2 rounded-md focus:outline-none focus:border-blue-500"
-            {...register("email", { required: true })}
+            label="이메일"
+            type="text"
+            register={register}
           />
           {errors.email && (
             <span className="text-center text-[red] font-bold">
               이메일을 입력해주세요
             </span>
           )}
-          <div>
-            <label
-              htmlFor="gender"
-              className="text-xs text-[#207198] font-bold mb-1 ml-1 hover:opacity-60"
-            >
-              성별
-            </label>
-            <div className="flex justify-between w-[60%] border-2 px-2 py-2 mb-2 rounded-md border-[#207198]">
-              <div className="flex items-center">
-                <input
-                  type="radio"
-                  id="male"
-                  value="male"
-                  {...register("gender", { required: true })}
-                />
-                <label
-                  htmlFor="male"
-                  className="font-semibold text-sm ml-1 text-[#207198]"
-                >
-                  남성
-                </label>
-              </div>
-              <div className="flex items-center">
-                <input
-                  type="radio"
-                  id="female"
-                  value="female"
-                  {...register("gender", { required: true })}
-                />
-                <label
-                  htmlFor="female"
-                  className="font-semibold text-sm ml-1 text-[#207198]"
-                >
-                  여성
-                </label>
-              </div>
-            </div>
-
-            {errors.gender && (
-              <span className="text-center text-[red] font-bold">
-                성별을 선택해주세요
-              </span>
-            )}
-          </div>
-          <label
-            htmlFor="birth"
-            className="text-xs text-[#207198] font-bold mb-1 ml-1 hover:opacity-60"
-          >
-            생년월일
-          </label>
-
-          <input
-            id="birth"
-            type="date"
-            className="w-[60%] border-2 border-[#207198] px-2 py-2 mb-2 rounded-md focus:outline-none focus:border-blue-500 text-sm"
-            {...register("birth", { required: true })}
+          <RadioComponent
+            id="gender"
+            label="성별"
+            options={[
+              { value: "남성", label: "남성" },
+              { value: "여성", label: "여성" },
+            ]}
+            register={register}
           />
+
+          {errors.gender && (
+            <span className="text-center text-[red] font-bold">
+              성별을 선택해주세요
+            </span>
+          )}
+          <InputComponent
+            id="birth"
+            label="생년월일"
+            type="date"
+            register={register}
+          />
+
           {errors.birth && (
             <span className="text-center text-[red] font-bold">
               생일을 선택해주세요

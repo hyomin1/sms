@@ -11,7 +11,7 @@ interface IStudyGroup {
   groupName: string;
   region: string;
   description: string;
-  gender: "male" | "female" | "any";
+  gender: "남성" | "여성" | "성별 무관";
   maxCapacity: number;
   minAge: number;
   maxAge: number;
@@ -91,9 +91,9 @@ function CreateStudyGroup() {
             label="성별"
             id="gender"
             options={[
-              { value: "male", label: "남성" },
-              { value: "female", label: "여성" },
-              { value: "any", label: "성별 무관" },
+              { value: "남성", label: "남성" },
+              { value: "여성", label: "여성" },
+              { value: "성별 무관", label: "성별 무관" },
             ]}
             register={register}
           />

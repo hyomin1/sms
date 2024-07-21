@@ -108,6 +108,20 @@ export const getUser = async (req: Request, res: Response) => {
   }
 };
 
+export const getUsers = async (req: Request, res: Response) => {
+  const { memberIds } = req.body;
+  try {
+    const users = await User.find({ _id: memberIds }).select(
+      "username gender birth profileImg"
+    );
+
+    res.json({ message: "유저 정보 조회 성공", users });
+  } catch (error) {
+    console.error("유저 정보 조회 중 에러", error);
+    res.status(500).json({ message: "유저 정보 조회 실패" });
+  }
+};
+
 const kakaoOpt = {
   clientId: process.env.KAKAO_CLIENT_ID || "",
   clientSecret: process.env.KAKAO_CLIENT_SECRET || "",

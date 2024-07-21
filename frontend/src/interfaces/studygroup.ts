@@ -3,7 +3,7 @@ export interface IStudyGroup {
   masterId: string;
   groupName: string;
   description: string;
-  gender: "male" | "female" | "any";
+  gender: "남성" | "여성" | "성별 무관";
   maxCapacity: number;
   ageRange: {
     min: number;
