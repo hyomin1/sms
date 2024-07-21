@@ -90,10 +90,10 @@ export const loginUser = async (req: Request, res: Response) => {
 
 export const getUser = async (req: Request, res: Response) => {
   const { id } = req.body;
-  console.log(req.body);
+
   try {
     const user = await User.findOne({ _id: id }).select(
-      "username gender birth profileImg email"
+      "username gender birth profileImg email createdAt"
     );
 
     if (!user) {

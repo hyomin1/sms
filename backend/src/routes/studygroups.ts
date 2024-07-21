@@ -2,6 +2,7 @@ import express from "express";
 import {
   acceptGroupUser,
   createStudyGroup,
+  deleteStudyGroup,
   denyGroupUser,
   getStudyGroup,
   getStudyGroups,
@@ -21,5 +22,7 @@ router.post("/search", searchGroup);
 router.post("/join", joinStudyGroup);
 router.post("/accept", acceptGroupUser);
 router.post("/deny", denyGroupUser);
+
+router.delete("/:groupId", deleteStudyGroup);
 
 export default router;

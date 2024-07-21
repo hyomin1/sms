@@ -22,6 +22,8 @@ const ERROR_MESSAGES = {
   GROUP_DENIAL_FAILED: "그룹 신청 거절 중 에러",
   GROUP_DENIAL_SUCCESS: "그룹 신청이 거절되었습니다.",
   NOT_AN_APPLICANT: "해당 유저가 신청자 목록에 존재하지 않습니다.",
+  GROUP_DELETED_FAILED: "그룹 삭제 실패",
+  GROUP_DELETED_SUCCESS: "그룹 삭제 성공",
 };
 
 const findStudyGroupById = async (groupId: string) => {
@@ -69,6 +71,30 @@ export const createStudyGroup = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("그룹 생성 중 에러 발생", error);
     res.status(500).json({ message: ERROR_MESSAGES.GROUP_CREATION_FAILED });
+  }
+};
+
+export const deleteStudyGroup = async (req: Request, res: Response) => {
+  const { groupId } = req.params;
+  try {
+    const group = await findStudyGroupById(groupId);
+    if (!group) {
+      return res.status(404).json({ message: ERROR_MESSAGES.GROUP_NOT_FOUND });
+    }
+    // 그룹에 1명 남고 그 1명이 방장인 경우 삭제 하기
+    if (group.members.length === 1 && group.members[0].equals(group.masterId)) {
+      await StudyGroup.deleteOne({ _id: groupId });
+      return res
+        .status(200)
+        .json({ message: ERROR_MESSAGES.GROUP_DELETED_SUCCESS });
+    } else {
+      return res
+        .status(400)
+        .json({ message: "그룹에 구성원이 남아 있습니다." });
+    }
+  } catch (error) {
+    console.error("그룹 삭제 중 에러", error);
+    res.status(500).json({ message: ERROR_MESSAGES.GROUP_DELETED_FAILED });
   }
 };
 
@@ -210,8 +236,6 @@ export const manageGroup = async (req: Request, res: Response) => {
     res.status(500).json({ message: ERROR_MESSAGES.GROUP_MANAGEMENT_FAILED });
   }
 };
-
-const removeApplicantsUser = (userId: string) => {};
 
 // 사용자 그룹 신청 수락
 export const acceptGroupUser = async (req: Request, res: Response) => {

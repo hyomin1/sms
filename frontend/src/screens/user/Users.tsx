@@ -22,6 +22,12 @@ function Users() {
     });
     setUsers(res.data.users);
   };
+
+  const deleteGroup = async () => {
+    const res = await axiosApi.delete(`/studyGroup/${groupId}`);
+    console.log(res.data);
+  };
+
   useEffect(() => {
     setUsers(location.state.users);
     setGroupId(location.state.groupId);
@@ -55,6 +61,7 @@ function Users() {
           </div>
         </div>
       ))}
+      <button onClick={deleteGroup}>그룹 삭제</button>
     </div>
   );
 }

@@ -80,7 +80,7 @@ function Login() {
             <button className="bg-gradient-to-r from-[#EE5757] to-[#FE904B] w-[60%] h-12 rounded-sm hover:opacity-60 text-white font-bold text-sm mb-2">
               로그인
             </button>
-            <button
+            <div
               onClick={kakaoLogin}
               className="w-[60%] h-10 hover:opacity-60 mb-4"
             >
@@ -89,8 +89,8 @@ function Login() {
                 src={"/images/kakao_login.png"}
                 className="w-[100%] h-12"
               />
-            </button>
-            <button
+            </div>
+            <div
               onClick={googleLogin}
               className="w-[60%] h-10 hover:opacity-60"
             >
@@ -99,7 +99,7 @@ function Login() {
                 src={"/images/google_login.png"}
                 className="w-[100%] h-12"
               />
-            </button>
+            </div>
           </div>
         </form>
       </div>

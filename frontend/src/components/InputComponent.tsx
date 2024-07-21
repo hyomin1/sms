@@ -4,7 +4,7 @@ interface IInput {
   id: string;
   label: string;
   type: string;
-  register: any;
+  register?: any;
   required?: boolean;
 }
 
