@@ -37,7 +37,9 @@ function GroupListComponent({ studyGroups, label }: GroupList) {
   return (
     <div className="border-2 border-[#207198] rounded-md p-2 w-full overflow-y-auto">
       {studyGroups?.length === 0 ? (
-        <span>스터디가 없습니다</span>
+        <div className="flex justify-center items-center">
+          <span className="font-bold text-sm">스터디가 존재하지 않습니다</span>
+        </div>
       ) : (
         studyGroups?.map((group, index) => (
           <div key={index} className="border border-black mb-2 p-2 rounded-md">

@@ -102,6 +102,8 @@ export const deleteStudyGroup = async (req: Request, res: Response) => {
 
 export const deleteGroupUser = async (req: Request, res: Response) => {
   const { groupId, userId } = req.params;
+  const { id } = req.body;
+
   try {
     const group = await findStudyGroupById(groupId);
     if (!group) {
@@ -110,6 +112,10 @@ export const deleteGroupUser = async (req: Request, res: Response) => {
     const user = await findUserById(userId);
     if (!user) {
       return res.status(404).json({ message: ERROR_MESSAGES.USER_NOT_FOUND });
+    }
+    // 그룹장만 멤버 추방 가능
+    if (id !== group.masterId) {
+      return res.status(404).json({ message: "그룹장만 추방할 수 있습니다." });
     }
     // 그룹장은 추방 x
     if (group.masterId.equals(userId)) {

@@ -3,15 +3,20 @@ import { useParams } from "react-router-dom";
 import axiosApi from "../../api";
 import { IStudyGroup } from "../../interfaces/studygroup";
 import { ApplicantUsers } from "../../interfaces/users";
-
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { setGroup } from "../../features/group/groupSlice";
+import StudyRoomUsers from "./StudyRoomUsers";
 function StudyRoom() {
   const params = useParams();
   const { groupId } = params;
-  const [group, setGroup] = useState<IStudyGroup>();
+
+  const group = useAppSelector((state) => state.group);
+  const dispatch = useAppDispatch();
   const [users, setUsers] = useState<ApplicantUsers[]>();
   const fetchStudy = async () => {
     const res = await axiosApi.get(`/studyGroup/${groupId}`);
-    setGroup(res.data.group);
+    //setGroup(res.data.group);
+    dispatch(setGroup(res.data.group));
     const res2 = await axiosApi.post("/auth/users", {
       memberIds: res.data.group.members,
     });
@@ -33,6 +38,7 @@ function StudyRoom() {
       }
     }
   };
+
   return (
     <div className="flex flex-col items-center p-2">
       <div className="flex flex-col items-center">
@@ -41,9 +47,10 @@ function StudyRoom() {
         </span>
         <span className="font-semibold text-sm mb-2">{group?.description}</span>
       </div>
-      <div className="flex justify-between  w-full">
+      <div className="flex justify-between w-full">
         <div className="border border-black w-[22%] flex flex-col items-center">
           <span className="font-bold text-lg">멤버 정보</span>
+          <StudyRoomUsers />
           {users?.map((user, index) => (
             <div key={index} className="border border-black w-full px-1">
               <div className="flex justify-start">
@@ -61,9 +68,11 @@ function StudyRoom() {
                 </span>
               </div>
               <div className="flex justify-between">
-                <button onClick={() => deleteMember(user._id)}>
-                  멤버 추방
-                </button>
+                {group?.masterId !== user._id && (
+                  <button onClick={() => deleteMember(user._id)}>
+                    멤버 추방
+                  </button>
+                )}
                 <button>정보 보기</button>
               </div>
             </div>
