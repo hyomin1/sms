@@ -114,7 +114,7 @@ export const deleteGroupUser = async (req: Request, res: Response) => {
       return res.status(404).json({ message: ERROR_MESSAGES.USER_NOT_FOUND });
     }
     // 그룹장만 멤버 추방 가능
-    if (id !== group.masterId) {
+    if (!id.equals(group.masterId)) {
       return res.status(404).json({ message: "그룹장만 추방할 수 있습니다." });
     }
     // 그룹장은 추방 x
@@ -157,13 +157,14 @@ export const getStudyGroups = async (req: Request, res: Response) => {
 
 export const getStudyGroup = async (req: Request, res: Response) => {
   const { groupId } = req.params;
+  const { id } = req.body;
   try {
     const group = await findStudyGroupById(groupId);
     if (!group) {
       return res.status(404).json({ message: ERROR_MESSAGES.GROUP_NOT_FOUND });
     }
 
-    res.json({ message: ERROR_MESSAGES.GROUP_QUERY_SUCCESS, group });
+    res.json({ message: ERROR_MESSAGES.GROUP_QUERY_SUCCESS, group, id });
   } catch (error) {
     console.error("그룹 조회 중 에러 발생", error);
     res.status(500).json({ message: ERROR_MESSAGES.GROUP_QUERY_FAILED });
@@ -175,7 +176,7 @@ export const searchGroup = async (req: Request, res: Response) => {
     const { isOnline, region, gender, category } = req.body;
     // 값 없는 경우 undefined
     let groups = await StudyGroup.find({});
-    let online;
+    let online: boolean | undefined = undefined;
 
     switch (isOnline) {
       case "true":
@@ -185,7 +186,8 @@ export const searchGroup = async (req: Request, res: Response) => {
         online = false;
         break;
     }
-    if (online) {
+
+    if (online !== undefined) {
       groups = groups.filter((group) => group.isOnline === online);
     }
     if (region) {

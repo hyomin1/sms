@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { ApplicantUsers } from "../../interfaces/users";
-import axiosApi from "../../api";
+import axiosApi from "../../axios";
 
 function Users() {
   const location = useLocation();

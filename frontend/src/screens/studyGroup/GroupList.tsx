@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axiosApi from "../../api";
+import axiosApi from "../../axios";
 import GroupListComponent from "../../components/GroupListComponent";
 import { IStudyGroup } from "../../interfaces/studygroup";
 
@@ -17,22 +17,22 @@ function GroupList() {
   }, []);
   return (
     <div className="flex justify-between h-screen p-4">
-      <div className="flex flex-col  w-[50%] items-center">
+      <div className="flex flex-col  w-[48%] items-center">
         <h1 className="bg-gradient-to-r from-[#EE5757] to-[#FE904B] inline-block text-transparent bg-clip-text font-bold text-3xl mb-4">
           내가 만든 스터디
         </h1>
-        <div className="w-full">
+        <div className="w-full overflow-y-auto">
           <GroupListComponent
             label="관리"
             studyGroups={createdStudyGroups || []}
           />
         </div>
       </div>
-      <div className="flex flex-col  w-[50%] items-center">
+      <div className="flex flex-col  w-[48%] items-center">
         <h1 className="bg-gradient-to-r from-[#EE5757] to-[#FE904B] inline-block text-transparent bg-clip-text font-bold text-3xl mb-4">
           내가 참여한 스터디
         </h1>
-        <div className="w-full">
+        <div className="w-full overflow-y-auto">
           <GroupListComponent
             label="스터디"
             studyGroups={joinedStudyGroups || []}

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import axiosApi from "../../api";
+import axiosApi from "../../axios";
 import { useNavigate } from "react-router-dom";
 import InputComponent from "../../components/InputComponent";
 import RadioComponent from "../../components/RadioComponent";

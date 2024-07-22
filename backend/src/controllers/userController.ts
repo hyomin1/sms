@@ -82,7 +82,9 @@ export const loginUser = async (req: Request, res: Response) => {
     // refreshToken 쿠키로 발급
     setRefreshTokenCookie(res, refresh_token);
 
-    return res.status(201).json({ message: "로그인 성공", access_token });
+    return res
+      .status(201)
+      .json({ message: "로그인 성공", _id: user._id, access_token });
   } catch (error) {
     return res.status(500).json({ message: "로그인 처리 중 서버 오류" });
   }

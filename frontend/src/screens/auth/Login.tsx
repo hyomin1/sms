@@ -1,6 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import axiosApi from "../../api";
+import axiosApi from "../../axios";
 import { Link, useNavigate } from "react-router-dom";
 import InputComponent from "../../components/InputComponent";
 

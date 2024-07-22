@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ApplicantUsers } from "../../interfaces/users";
-import axiosApi from "../../api";
+import axiosApi from "../../axios";
 import InputComponent from "../../components/InputComponent";
 import UserInformComponent from "../../components/UserInformComponent";
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
-import axiosApi from "../../api";
+import axiosApi from "../../axios";
 import InputComponent from "../../components/InputComponent";
 import RadioComponent from "../../components/RadioComponent";
 

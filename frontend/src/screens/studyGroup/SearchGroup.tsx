@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import SelectBoxComponent from "../../components/SelectBoxComponent";
-import axiosApi from "../../api";
+import axiosApi from "../../axios";
 import { IStudyGroup } from "../../interfaces/studygroup";
 import GroupListComponent from "../../components/GroupListComponent";
 import { regionOptions } from "../../constants/regions";
 import { IoSearchOutline } from "react-icons/io5";
 
 function SearchGroup() {
-  const genderOptions = ["남", "여", "성별무관"];
+  const genderOptions = ["남성", "여성", "성별 무관"];
   const onlineOptions = ["온라인", "오프라인"];
 
   const [gender, setGender] = useState<string>();
@@ -30,14 +30,14 @@ function SearchGroup() {
   const handleGenderChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
     switch (value) {
-      case "남":
-        setGender("male");
+      case "남성":
+        setGender("남성");
         break;
-      case "여":
-        setGender("female");
+      case "여성":
+        setGender("여성");
         break;
-      case "성별무관":
-        setGender("any");
+      case "성별 무관":
+        setGender("성별 무관");
         break;
       default:
         setGender(undefined);
@@ -63,7 +63,7 @@ function SearchGroup() {
   };
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center h-screen">
       <form
         onSubmit={searchGroup}
         className="flex w-[50%] mt-16 border-2 border-[#207198] rounded-xl p-3"
@@ -96,7 +96,7 @@ function SearchGroup() {
           onChange={handleRegionChange}
         />
       </div>
-      <div className="w-[50%]">
+      <div className="w-[50%] overflow-y-auto">
         <GroupListComponent label="신청" studyGroups={groups || []} />
       </div>
     </div>
