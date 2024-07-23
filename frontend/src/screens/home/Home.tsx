@@ -1,8 +1,22 @@
-import React from "react";
+import React, { useEffect } from "react";
 import KaKaoMap from "./KaKaoMap";
 import { Link } from "react-router-dom";
+import { BASE_URL } from "../../api/api";
+import { io } from "socket.io-client";
 
 function Home() {
+  useEffect(() => {
+    const socket = io(BASE_URL);
+    socket.on("connect", () => {
+      console.log("front sock connect");
+    });
+
+    // 홈 화면 언마운트시 연결 종료
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
   return (
     <div className="flex flex-col h-screen">
       <div className="flex justify-center items-center my-4 h-[10%]">

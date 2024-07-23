@@ -4,6 +4,8 @@ import { setGroup } from "../features/group/groupSlice";
 import { setId } from "../features/id/idSlice";
 import { setUsers } from "../features/users/usersSlice";
 
+export const BASE_URL = "http://localhost:8080";
+
 export const fetchStudy = async (groupId: string, dispatch: AppDispatch) => {
   const res = await axiosApi.get(`/studyGroup/${groupId}`);
 
