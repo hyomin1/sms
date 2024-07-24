@@ -6,6 +6,7 @@ import { RouterProvider } from "react-router-dom";
 import router from "./Router";
 import { Provider } from "react-redux";
 import { store } from "./app/store";
+import { socket, SocketContext } from "./context/socket";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -13,9 +14,11 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    <Provider store={store}>
-      <RouterProvider router={router} />
-    </Provider>
+    <SocketContext.Provider value={socket}>
+      <Provider store={store}>
+        <RouterProvider router={router} />
+      </Provider>
+    </SocketContext.Provider>
   </React.StrictMode>
 );
 

@@ -148,6 +148,7 @@ export const getStudyGroups = async (req: Request, res: Response) => {
       message: ERROR_MESSAGES.GROUP_QUERY_SUCCESS,
       createdStudyGroups,
       joinedStudyGroups,
+      userId,
     });
   } catch (error) {
     console.error("그룹 조회 중 에러 발생", error);

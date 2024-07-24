@@ -2,12 +2,18 @@ import React, { useEffect, useState } from "react";
 import axiosApi from "../../axios";
 import GroupListComponent from "../../components/GroupListComponent";
 import { IStudyGroup } from "../../interfaces/studygroup";
+import { useAppDispatch } from "../../app/hooks";
+import { setId } from "../../features/id/idSlice";
 
 function GroupList() {
   const [createdStudyGroups, setCreatedStudyGroups] = useState<IStudyGroup[]>();
   const [joinedStudyGroups, setJoinedStudyGroups] = useState<IStudyGroup[]>();
+
+  const dispatch = useAppDispatch();
+
   const getStudyGroup = async () => {
     const res = await axiosApi.get("/studyGroup");
+    dispatch(setId(res.data.id));
 
     setCreatedStudyGroups(res.data.createdStudyGroups);
     setJoinedStudyGroups(res.data.joinedStudyGroups);
@@ -15,6 +21,7 @@ function GroupList() {
   useEffect(() => {
     getStudyGroup();
   }, []);
+
   return (
     <div className="flex justify-between h-screen p-4">
       <div className="flex flex-col  w-[48%] items-center">

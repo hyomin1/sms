@@ -19,7 +19,6 @@ interface IStudyGroup {
   };
   region: string;
   gender: "남성" | "여성" | "성별 무관";
-  calendarId: mongoose.Types.ObjectId[];
 }
 
 const studyGroupSchema = new Schema<IStudyGroup>({
@@ -37,9 +36,6 @@ const studyGroupSchema = new Schema<IStudyGroup>({
   },
   region: { type: String, required: true },
   gender: { type: String, enum: ["남성", "여성", "성별 무관"], required: true },
-
-  //   calendarId: [{ type: ObjectId, ref: "Calendar" }],
-  //   chatRoomId: [{ type: ObjectId, ref: "ChatRoom"}],
 });
 
 const StudyGroup = model<IStudyGroup>("StudyGroup", studyGroupSchema);

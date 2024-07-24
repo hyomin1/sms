@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import StudyRoomUsers from "./StudyRoomUsers";
 import { fetchStudy } from "../../api/api";
+import StudyRoomChat from "./StudyRoomChat";
 function StudyRoom() {
   const params = useParams();
   const { groupId } = params;
@@ -10,6 +11,7 @@ function StudyRoom() {
   const group = useAppSelector((state) => state.group);
   const dispatch = useAppDispatch();
 
+  //const socket = useContext(SocketContext);
   useEffect(() => {
     if (groupId) {
       fetchStudy(groupId, dispatch);
@@ -29,9 +31,7 @@ function StudyRoom() {
         <div className="w-[50%] border border-black flex flex-col items-center">
           <span className="font-bold text-lg">할 일</span>
         </div>
-        <div className="w-[22%] border border-black flex flex-col items-center">
-          <span className="font-bold text-lg">채팅</span>
-        </div>
+        <StudyRoomChat groupId={groupId || ""} />
       </div>
     </div>
   );

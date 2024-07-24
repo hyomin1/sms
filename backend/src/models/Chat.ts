@@ -1,0 +1,51 @@
+import mongoose, { model, ObjectId, Schema } from "mongoose";
+
+const ObjectId = Schema.Types.ObjectId;
+
+interface IMessage {
+  sender: mongoose.Types.ObjectId;
+  content: string;
+  createdAt: Date;
+}
+
+interface IChat {
+  studyGroupId: mongoose.Types.ObjectId;
+  messages: IMessage[];
+  members: mongoose.Types.ObjectId[];
+  lastActivity: Date;
+}
+
+const messageSchema = new Schema<IMessage>({
+  sender: { type: Schema.Types.ObjectId, ref: "User", required: true },
+  content: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now },
+});
+
+const chatSchema = new Schema<IChat>(
+  {
+    studyGroupId: {
+      type: Schema.Types.ObjectId,
+      ref: "StudyGroup",
+      required: true,
+    },
+    messages: [messageSchema],
+    members: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    lastActivity: { type: Date, default: Date.now },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+// 인덱스 설정
+chatSchema.index({ studyGroupId: 1 });
+chatSchema.index({ lastActivity: -1 });
+
+// TTL 인덱스 설정 (옵션): 30일 후 메시지 자동 삭제
+messageSchema.index(
+  { createdAt: 1 },
+  { expireAfterSeconds: 30 * 24 * 60 * 60 }
+);
+
+const Chat = mongoose.model<IChat>("Chat", chatSchema);
+export default Chat;
