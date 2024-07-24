@@ -3,7 +3,7 @@ import mongoose, { model, ObjectId, Schema } from "mongoose";
 const ObjectId = Schema.Types.ObjectId;
 
 interface IMessage {
-  sender: mongoose.Types.ObjectId;
+  senderName: String;
   content: string;
   createdAt: Date;
 }
@@ -16,7 +16,7 @@ interface IChat {
 }
 
 const messageSchema = new Schema<IMessage>({
-  sender: { type: Schema.Types.ObjectId, ref: "User", required: true },
+  senderName: { type: String, ref: "User", required: true },
   content: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
 });

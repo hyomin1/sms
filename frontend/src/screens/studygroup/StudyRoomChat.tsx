@@ -7,7 +7,7 @@ interface IGRoupId {
   groupId: string;
 }
 interface IChatHistory {
-  sender: string;
+  senderName: string;
   content: string;
   createdAt: Date;
 }
@@ -26,8 +26,10 @@ function StudyRoomChat({ groupId }: IGRoupId) {
     });
 
     socket.on("chatHistory", (history) => {
-      console.log(history);
       setMessages(history);
+    });
+    socket.on("new_message", (message) => {
+      setMessages(message);
     });
 
     return () => {
@@ -46,9 +48,16 @@ function StudyRoomChat({ groupId }: IGRoupId) {
       setMessage("");
     }
   };
+
   return (
     <div className="w-[22%] border border-black flex flex-col items-center">
       <span className="font-bold text-lg">채팅</span>
+      {messages?.map((message, index) => (
+        <div key={index}>
+          {message.senderName} :{message.content}
+        </div>
+      ))}
+
       <form onSubmit={sendChat} className="border border-black">
         <input
           value={message}

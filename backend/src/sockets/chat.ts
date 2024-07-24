@@ -1,6 +1,7 @@
 import { Server, Socket } from "socket.io";
 import Chat from "../models/Chat";
 import mongoose from "mongoose";
+import User from "../models/User";
 
 export const chatSocket = (io: Server) => {
   io.on("connection", (socket: Socket) => {
@@ -31,19 +32,24 @@ export const chatSocket = (io: Server) => {
       await chat.save();
 
       socket.emit("chatHistory", chat.messages);
+      socket.join(groupId);
     });
 
     socket.on("new_message", async (msg, groupId, userId) => {
-      const message = {
-        sender: userId,
-        content: msg,
-        createdAt: new Date(),
-      };
-      const chat = await Chat.findOne({ studyGroupId: groupId });
-      if (chat) {
-        chat.messages.push(message);
-        await chat.save();
-        socket.emit("chatHistory", chat.messages);
+      const user = await User.findOne({ _id: userId });
+      if (user) {
+        const message = {
+          senderName: user.username,
+          senderProfile: user.profileImg,
+          content: msg,
+          createdAt: new Date(),
+        };
+        const chat = await Chat.findOne({ studyGroupId: groupId });
+        if (chat) {
+          chat.messages.push(message);
+          await chat.save();
+          io.to(groupId).emit("new_message", chat.messages);
+        }
       }
     });
   });
