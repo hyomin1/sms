@@ -6,6 +6,8 @@ interface IMessage {
   senderName: String;
   content: string;
   createdAt: Date;
+  profile: string;
+  userId: string;
 }
 
 interface IChat {
@@ -19,6 +21,8 @@ const messageSchema = new Schema<IMessage>({
   senderName: { type: String, ref: "User", required: true },
   content: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
+  profile: { type: String, required: true },
+  userId: { type: String, required: true },
 });
 
 const chatSchema = new Schema<IChat>(

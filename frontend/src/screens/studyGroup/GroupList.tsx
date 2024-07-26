@@ -13,14 +13,14 @@ function GroupList() {
 
   const getStudyGroup = async () => {
     const res = await axiosApi.get("/studyGroup");
-    dispatch(setId(res.data.id));
+    dispatch(setId(res.data.userId));
 
     setCreatedStudyGroups(res.data.createdStudyGroups);
     setJoinedStudyGroups(res.data.joinedStudyGroups);
   };
   useEffect(() => {
     getStudyGroup();
-  }, []);
+  }, [dispatch]);
 
   return (
     <div className="flex justify-between h-screen p-4">

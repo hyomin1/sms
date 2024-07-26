@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { ObjectId } from "mongodb";
-import mongoose from "mongoose";
 
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY || "";
 const JWT_REFRESH_SECRET_KEY = process.env.JWT_REFRESH_SECRET_KEY || "";

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import StudyGroup from "../models/StudyGroup";
 import User from "../models/User";
+import Chat from "../models/Chat";
 
 const ERROR_MESSAGES = {
   GROUP_NOT_FOUND: "그룹을 찾을 수 없습니다.",
@@ -34,6 +35,10 @@ const findStudyGroupById = async (groupId: string) => {
 
 const findUserById = async (userId: string) => {
   return User.findOne({ _id: userId });
+};
+
+const findChatById = async (chatId: string) => {
+  return Chat.findOne({ studyGroupId: chatId });
 };
 
 export const createStudyGroup = async (req: Request, res: Response) => {
@@ -86,6 +91,7 @@ export const deleteStudyGroup = async (req: Request, res: Response) => {
     // 그룹에 1명 남고 그 1명이 방장인 경우 삭제 하기
     if (group.members.length === 1 && group.members[0].equals(group.masterId)) {
       await StudyGroup.deleteOne({ _id: groupId });
+
       return res
         .status(200)
         .json({ message: ERROR_MESSAGES.GROUP_DELETED_SUCCESS });
@@ -105,8 +111,11 @@ export const deleteGroupUser = async (req: Request, res: Response) => {
   const { id } = req.body;
 
   try {
-    const group = await findStudyGroupById(groupId);
-    if (!group) {
+    const [group, chat] = await Promise.all([
+      findStudyGroupById(groupId),
+      findChatById(groupId),
+    ]);
+    if (!group || !chat) {
       return res.status(404).json({ message: ERROR_MESSAGES.GROUP_NOT_FOUND });
     }
     const user = await findUserById(userId);
@@ -123,7 +132,9 @@ export const deleteGroupUser = async (req: Request, res: Response) => {
     }
     // 멤버 추방
     group.members = group.members.filter((member) => !member.equals(userId));
+    chat.members = chat.members.filter((member) => !member.equals(userId));
     await group.save();
+    await chat.save();
     res.json({ message: ERROR_MESSAGES.MEMBER_DELETED_SUCCESS });
   } catch (error) {
     console.error("멤버 추방 중 에러 발생", error);
