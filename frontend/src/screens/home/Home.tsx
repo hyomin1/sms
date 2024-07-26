@@ -1,15 +1,17 @@
-import React, { useContext, useEffect } from "react";
 import KaKaoMap from "./KaKaoMap";
-import { Link } from "react-router-dom";
-import { SocketContext } from "../../context/socket";
+import { Link, useNavigate } from "react-router-dom";
+import axiosApi from "../../axios";
 
 function Home() {
-  // const socket = useContext(SocketContext);
-
-  // useEffect(() => {
-  //   socket.connect();
-  // }, [socket]);
-
+  const navigate = useNavigate();
+  const getProfile = async () => {
+    const res = await axiosApi.get("/auth/profile");
+    navigate("/profile", {
+      state: {
+        user: res.data.user,
+      },
+    });
+  };
   return (
     <div className="flex flex-col h-screen">
       <div className="flex justify-center items-center my-4 h-[10%]">
@@ -29,15 +31,15 @@ function Home() {
           to={"/groupList"}
           className="w-[25%] flex justify-center items-center  hover:opacity-60 font-bold border border-black"
         >
-          그룹 관리
+          나의 그룹
         </Link>
 
-        <Link
-          to={"/profile"}
+        <button
+          onClick={getProfile}
           className="w-[25%] flex justify-center items-center  hover:opacity-60 font-bold border border-black"
         >
           내 정보
-        </Link>
+        </button>
 
         <Link
           to={"/searchGroup"}

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { ApplicantUsers } from "../../interfaces/users";
 import axiosApi from "../../axios";
-import InputComponent from "../../components/InputComponent";
 import UserInformComponent from "../../components/UserInformComponent";
+import { useLocation } from "react-router-dom";
 
 interface User extends ApplicantUsers {
   email: string;
@@ -11,14 +11,10 @@ interface User extends ApplicantUsers {
 }
 function Profile() {
   const [user, setUser] = useState<User>();
-  const fetchUserProfile = async () => {
-    const res = await axiosApi.get("/auth/profile");
-    setUser(res.data.user);
-  };
-
+  const location = useLocation();
   useEffect(() => {
-    fetchUserProfile();
-  }, []);
+    setUser(location.state.user);
+  }, [location]);
 
   if (!user) {
     return <div>로딩 중...</div>;
@@ -31,7 +27,7 @@ function Profile() {
     <div className="px-12">
       <div className="flex justify-center mt-8">
         <span className="bg-gradient-to-r from-[#EE5757] to-[#FE904B] inline-block text-transparent bg-clip-text font-bold text-4xl">
-          내 정보
+          프로필 정보
         </span>
       </div>
       <div className="flex justify-center flex-col items-center mt-8 border border-black rounded-lg py-4">

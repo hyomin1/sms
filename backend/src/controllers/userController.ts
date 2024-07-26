@@ -110,6 +110,25 @@ export const getUser = async (req: Request, res: Response) => {
   }
 };
 
+export const getOtherUser = async (req: Request, res: Response) => {
+  const { userId } = req.params;
+  try {
+    const user = await User.findOne({ _id: userId }).select(
+      "username gender birth profileImg email createdAt"
+    );
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ message: "해당 유저가 존재하지 않습니다." });
+    }
+    res.status(200).json({ message: "유저 정보 조회 성공", user });
+  } catch (error) {
+    console.error("유저 정보 조회 중 에러", error);
+    res.status(500).json({ message: "유저 정보 조회 실패" });
+  }
+};
+
 export const getUsers = async (req: Request, res: Response) => {
   const { memberIds } = req.body;
   try {

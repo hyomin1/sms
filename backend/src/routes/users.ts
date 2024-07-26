@@ -2,6 +2,7 @@ import express from "express";
 import multer from "multer";
 import {
   addInform,
+  getOtherUser,
   getUser,
   getUsers,
   googleCallback,
@@ -29,6 +30,7 @@ router.get("/googleLogin", googleLoginUser);
 router.get("/kakao/callback", kakaoCallback);
 router.get("/google/callback", googleCallback);
 router.get("/profile", authenticateJWT, getUser);
+router.get("/profile/:userId", getOtherUser);
 
 // access_token 재발급 요청
 router.post("/refresh", refreshAccessToken);

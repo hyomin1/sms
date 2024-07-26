@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { BASE_URL } from "../../api/api";
+import axiosApi from "../../axios";
+import { useNavigate } from "react-router-dom";
 
 interface IId {
   groupId: string;
@@ -18,6 +20,8 @@ function StudyRoomChat({ groupId }: IId) {
   const [message, setMessage] = useState<string>("");
   const [messages, setMessages] = useState<IChatHistory[]>([]);
   const [myId, setMyId] = useState();
+
+  const navigate = useNavigate();
 
   const token = localStorage.getItem("access_token");
   useEffect(() => {
@@ -60,6 +64,16 @@ function StudyRoomChat({ groupId }: IId) {
     };
   }, []);
 
+  const getProfile = async (userId: string) => {
+    const res = await axiosApi.get(`/auth/profile/${userId}`);
+    console.log(res.data);
+    navigate("/profile", {
+      state: {
+        user: res.data.user,
+      },
+    });
+  };
+
   const sendChat = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const socket = socketRef.current;
@@ -79,12 +93,11 @@ function StudyRoomChat({ groupId }: IId) {
   };
 
   return (
-    <div className="w-[22%] border border-black flex flex-col items-center h-[100%]">
+    <div className="w-[22%] border-2 border-black rounded-xl flex flex-col items-center h-[100%]">
       <span className="font-bold text-lg">채팅</span>
       <div className="border border-black flex flex-col overflow-y-auto h-[90%] w-full p-1 bg-yellow-300">
         {messages?.map((message, index) => {
           const isMyMessage = myId === message.userId;
-          console.log(isMyMessage);
           return (
             <div
               key={index}
@@ -94,9 +107,10 @@ function StudyRoomChat({ groupId }: IId) {
             >
               {!isMyMessage && (
                 <img
+                  onClick={() => getProfile(message.userId)}
                   alt="profile"
                   src={message.profile}
-                  className="w-8 h-8 rounded-xl mr-2"
+                  className="w-8 h-8 rounded-xl mr-2 hover:opacity-60"
                 />
               )}
               <div
@@ -134,17 +148,14 @@ function StudyRoomChat({ groupId }: IId) {
         })}
       </div>
 
-      <form
-        onSubmit={sendChat}
-        className="border border-black w-full h-[10%] flex"
-      >
+      <form onSubmit={sendChat} className="w-full h-[10%] flex rounded-xl">
         <input
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder="채팅 입력"
-          className="w-[80%] h-full p-2"
+          className="w-[80%] h-full p-2 rounded-xl text-sm"
         />
-        <button className="border border-black w-[20%] font-bold hover:opacity-60">
+        <button className="border border-black text-sm rounded-md w-[20%] font-bold hover:opacity-60">
           전송
         </button>
       </form>
