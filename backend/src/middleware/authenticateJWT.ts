@@ -25,8 +25,9 @@ const authenticateJWT = (req: Request, res: Response, next: NextFunction) => {
       if (err) {
         // access_token 만료, client에서 refresh이용해서 재 요청
         if (err.name === "TokenExpiredError") {
-          refreshAccessToken(req, res);
-          return res.status(401).json({ message: "토큰 만료" });
+          console.error("여긴가");
+          return refreshAccessToken(req, res);
+          //return res.status(401).json({ message: "토큰 만료" });
         }
         return res.status(403).json({ message: "유효하지 않은 토큰" });
       }
@@ -63,7 +64,7 @@ const refreshAccessToken = (req: Request, res: Response) => {
 
     // 토큰 만료시 클라이언트에서 다시 발급받고 요청보내는 로직필요함
     const accessToken = generateAccessToken(user.id);
-    res.json({ accessToken });
+    res.json({ accessToken, message: "새로운 액세스 토큰 발급" });
   });
 };
 export {

@@ -3,8 +3,9 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import axiosApi from "../../axios";
 import { fetchStudy } from "../../api/api";
 import { useNavigate } from "react-router-dom";
+import { ISocket } from "../../interfaces/studygroup";
 
-function StudyRoomUsers() {
+function StudyRoomUsers({ groupId, socket }: ISocket) {
   const group = useAppSelector((state) => state.group);
   const users = useAppSelector((state) => state.users);
   const id = useAppSelector((state) => state.id);

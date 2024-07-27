@@ -1,3 +1,5 @@
+import { Socket } from "socket.io-client";
+
 export interface IStudyGroup {
   _id: string;
   masterId: string;
@@ -14,4 +16,9 @@ export interface IStudyGroup {
   isOnline: boolean;
   applicants: string[];
   members: string[];
+}
+
+export interface ISocket {
+  groupId: string;
+  socket: Socket | null;
 }

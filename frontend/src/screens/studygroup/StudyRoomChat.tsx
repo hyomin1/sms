@@ -3,10 +3,8 @@ import { io, Socket } from "socket.io-client";
 import { BASE_URL } from "../../api/api";
 import axiosApi from "../../axios";
 import { useNavigate } from "react-router-dom";
+import { ISocket } from "../../interfaces/studygroup";
 
-interface IId {
-  groupId: string;
-}
 interface IChatHistory {
   senderName: string;
   content: string;
@@ -15,8 +13,7 @@ interface IChatHistory {
   userId: string;
 }
 
-function StudyRoomChat({ groupId }: IId) {
-  const socketRef = useRef<Socket | null>(null);
+function StudyRoomChat({ groupId, socket }: ISocket) {
   const [message, setMessage] = useState<string>("");
   const [messages, setMessages] = useState<IChatHistory[]>([]);
   const [myId, setMyId] = useState();
@@ -25,17 +22,9 @@ function StudyRoomChat({ groupId }: IId) {
 
   const token = localStorage.getItem("access_token");
   useEffect(() => {
-    if (!socketRef.current?.connected) {
-      socketRef.current = io(BASE_URL, {
-        auth: {
-          token,
-        },
-      });
-      const socket = socketRef.current;
-      socket.on("connect", () => {
-        socket.emit("joinRoom", groupId);
-      });
-      console.log(socket);
+    console.log(socket);
+    if (socket?.connected) {
+      socket.emit("joinRoom", groupId);
 
       socket.on("welcome", (name) => {
         console.log(name);
@@ -57,9 +46,8 @@ function StudyRoomChat({ groupId }: IId) {
     }
 
     return () => {
-      if (socketRef.current) {
-        socketRef.current.emit("leaveRoom", groupId);
-        socketRef.current.disconnect();
+      if (socket) {
+        socket.emit("leaveRoom", groupId);
       }
     };
   }, []);
@@ -76,7 +64,6 @@ function StudyRoomChat({ groupId }: IId) {
 
   const sendChat = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const socket = socketRef.current;
     if (socket) {
       socket.emit("new_message", message, groupId);
       setMessage("");
