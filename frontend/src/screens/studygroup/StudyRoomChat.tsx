@@ -1,6 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
-import { io, Socket } from "socket.io-client";
-import { BASE_URL } from "../../api/api";
+import React, { useEffect, useState } from "react";
 import axiosApi from "../../axios";
 import { useNavigate } from "react-router-dom";
 import { ISocket } from "../../interfaces/studygroup";
@@ -26,7 +24,6 @@ function StudyRoomChat({ groupId, socket }: ISocket) {
 
   useEffect(() => {
     if (socket?.connected) {
-      console.log("c");
       socket.emit("joinRoom", groupId);
 
       socket.on("welcome", handleMessage);

@@ -3,35 +3,18 @@ import Chat from "../models/Chat";
 import mongoose from "mongoose";
 import User from "../models/User";
 import jwt from "jsonwebtoken";
+import {
+  AuthenticatedSocket,
+  authenticateSocket,
+} from "../middleware/authSocket";
 
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY || "";
 
-interface AuthenticatedSocket extends Socket {
-  user?: {
-    id: string;
-  };
-}
 const defaultImg =
   "https://image-sms.s3.ap-northeast-2.amazonaws.com/defaultProfileImg.png";
 
 export const chatSocket = (io: Server) => {
-  io.use((socket: AuthenticatedSocket, next) => {
-    const token = socket.handshake.auth.token;
-    if (!token) {
-      return next(new Error("Authentication error : Token missing"));
-    }
-
-    jwt.verify(token, JWT_SECRET_KEY, (err: any, user: any) => {
-      if (err) {
-        if (err.name === "TokenExpiredError") {
-          return next(new Error("Authentication error : Token expired"));
-        }
-        return next(new Error("Authentication error: Invalid token"));
-      }
-      socket.user = user;
-      next();
-    });
-  });
+  io.use(authenticateSocket);
   io.on("connection", (socket: AuthenticatedSocket) => {
     console.log("user connected");
 
