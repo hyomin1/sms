@@ -13,13 +13,11 @@ const root = ReactDOM.createRoot(
 );
 
 root.render(
-  <React.StrictMode>
-    <SocketContext.Provider value={socket}>
-      <Provider store={store}>
-        <RouterProvider router={router} />
-      </Provider>
-    </SocketContext.Provider>
-  </React.StrictMode>
+  <SocketContext.Provider value={socket}>
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
+  </SocketContext.Provider>
 );
 
 // If you want to start measuring performance in your app, pass a function

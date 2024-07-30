@@ -13,6 +13,17 @@ function StudyRoomUsers({ groupId, socket }: ISocket) {
 
   const navigate = useNavigate();
 
+  const manageGroup = async () => {
+    const res = await axiosApi.post("/studyGroup/manage", {
+      groupId: group._id,
+    });
+    if (res.status === 200) {
+      navigate("/manageUser", {
+        state: { users: res.data.users, groupId: group._id },
+      });
+    }
+  };
+
   const getProfile = async (userId: string) => {
     const res = await axiosApi.get(`/auth/profile/${userId}`);
     console.log(res.data);
@@ -27,6 +38,7 @@ function StudyRoomUsers({ groupId, socket }: ISocket) {
     const isConfirmed = window.confirm(
       "정말로 이 사용자를 그룹에서 제거하시겠습니까?"
     );
+    // 제거 웹소켓으로
     if (isConfirmed) {
       const res = await axiosApi.delete(`/studyGroup/${group._id}/${userId}`);
       if (res.status === 200) {
@@ -35,9 +47,35 @@ function StudyRoomUsers({ groupId, socket }: ISocket) {
       }
     }
   };
+
+  // 그룹 탈퇴랑 사용자 제거 로직 비슷함 웹소켓으로 엮어서 로직 수정하기
+  const quitGroup = () => {
+    const isConfirmed = window.confirm("정말로 이 그룹에서 나가시겠습니까?");
+    if (isConfirmed) {
+    }
+
+    //navigate("/");
+  };
   return (
     <div className="border-2 border-black w-[22%] flex flex-col items-center rounded-xl">
-      <span className="font-bold text-lg">멤버 정보</span>
+      <div className="flex justify-between items-center w-full p-2">
+        <span className="font-bold text-lg">멤버 정보</span>
+        {group.masterId === id.id ? (
+          <button
+            className="border border-black p-1 rounded-md hover:opacity-60"
+            onClick={manageGroup}
+          >
+            그룹 관리
+          </button>
+        ) : (
+          <button
+            onClick={quitGroup}
+            className="border border-black p-1 rounded-md hover:opacity-60"
+          >
+            그룹 나가기
+          </button>
+        )}
+      </div>
       <div className="w-full overflow-y-auto">
         {users?.map((user, index) => (
           <div key={index} className="w-full px-1 mb-2">

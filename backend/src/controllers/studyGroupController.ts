@@ -60,7 +60,7 @@ export const createStudyGroup = async (req: Request, res: Response) => {
       max: maxAge,
     };
 
-    await StudyGroup.create({
+    const group = await StudyGroup.create({
       masterId: id,
       groupName,
       description,
@@ -73,6 +73,13 @@ export const createStudyGroup = async (req: Request, res: Response) => {
       maxAge,
       category,
       members: [id], // 생성 시 생성한 사람도 멤버에 포함됨
+    });
+    // 그룹 생성하면서 채팅방도 함께 생성
+    await Chat.create({
+      studyGroupId: group._id,
+      members: [id],
+      messages: [],
+      lastActivity: new Date(),
     });
     res.json({ message: ERROR_MESSAGES.GROUP_CREATION_SUCCESS });
   } catch (error) {
@@ -288,6 +295,7 @@ export const acceptGroupUser = async (req: Request, res: Response) => {
   const { user_id, groupId } = req.body;
   try {
     const group = await findStudyGroupById(groupId);
+
     if (!group) {
       return res.status(404).json({ message: ERROR_MESSAGES.GROUP_NOT_FOUND });
     }

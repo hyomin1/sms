@@ -20,37 +20,36 @@ function StudyRoomChat({ groupId, socket }: ISocket) {
 
   const navigate = useNavigate();
 
-  const token = localStorage.getItem("access_token");
+  const handleMessage = (message: IChatHistory) => {
+    setMessages((prev) => [...prev, message]);
+  };
+
   useEffect(() => {
-    console.log(socket);
     if (socket?.connected) {
+      console.log("c");
       socket.emit("joinRoom", groupId);
 
-      socket.on("welcome", (name) => {
-        console.log(name);
-        alert(name);
-      });
+      socket.on("welcome", handleMessage);
 
       socket.on("chatHistory", (history, userId) => {
         setMessages(history);
         setMyId(userId);
       });
 
-      socket.on("new_message", (message) => {
-        setMessages(message);
-      });
+      socket.on("new_message", handleMessage);
 
       socket.on("error", (error) => {
         alert(error);
       });
     }
-
     return () => {
       if (socket) {
         socket.emit("leaveRoom", groupId);
+        socket.off("welcome", handleMessage);
+        socket.off("new_message", handleMessage);
       }
     };
-  }, []);
+  }, [socket, groupId]);
 
   const getProfile = async (userId: string) => {
     const res = await axiosApi.get(`/auth/profile/${userId}`);
@@ -85,14 +84,19 @@ function StudyRoomChat({ groupId, socket }: ISocket) {
       <div className="border border-black flex flex-col overflow-y-auto h-[90%] w-full p-1 bg-yellow-300">
         {messages?.map((message, index) => {
           const isMyMessage = myId === message.userId;
+          const isNotification = message.senderName === "notification";
           return (
             <div
               key={index}
               className={`flex mb-2 ${
-                isMyMessage ? "justify-end" : "justify-start"
+                isNotification
+                  ? "justify-center"
+                  : isMyMessage
+                  ? "justify-end"
+                  : "justify-start"
               }`}
             >
-              {!isMyMessage && (
+              {!isMyMessage && !isNotification && (
                 <img
                   onClick={() => getProfile(message.userId)}
                   alt="profile"
@@ -102,28 +106,36 @@ function StudyRoomChat({ groupId, socket }: ISocket) {
               )}
               <div
                 className={`text-xs flex flex-col ${
-                  isMyMessage ? "items-end" : "items-start"
+                  isNotification
+                    ? "items-center"
+                    : isMyMessage
+                    ? "items-end"
+                    : "items-start"
                 }`}
               >
-                {!isMyMessage && (
+                {!isMyMessage && !isNotification && (
                   <span className="font-bold text-xs mb-1">
                     {message.senderName}
                   </span>
                 )}
                 <div className="flex items-end">
-                  {isMyMessage && (
+                  {isMyMessage && !isNotification && (
                     <span className="text-[0.5rem] mr-1">
                       {calDay(message.createdAt)}
                     </span>
                   )}
                   <div
                     className={`border rounded-md p-1 flex ${
-                      isMyMessage ? "bg-blue-200" : "bg-white"
+                      isNotification
+                        ? "bg-gray-200"
+                        : isMyMessage
+                        ? "bg-blue-200"
+                        : "bg-white"
                     }`}
                   >
                     <span>{message.content}</span>
                   </div>
-                  {!isMyMessage && (
+                  {!isMyMessage && !isNotification && (
                     <span className="text-[0.5rem] ml-1">
                       {calDay(message.createdAt)}
                     </span>

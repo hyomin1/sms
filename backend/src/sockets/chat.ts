@@ -45,25 +45,28 @@ export const chatSocket = (io: Server) => {
       }
       try {
         const userId = new mongoose.Types.ObjectId(socket.user.id);
-        let chat = await Chat.findOne({ studyGroupId: groupId });
+        const chat = await Chat.findOne({ studyGroupId: groupId });
         // 채팅 방 없는 경우
         if (!chat) {
-          chat = new Chat({
-            studyGroupId: groupId,
-            messages: [],
-            lastActivity: new Date(),
-          });
-          if (userId) {
-            chat.members.push(userId);
-          }
-        } else {
-          if (userId && !chat.members.includes(userId)) {
-            chat.members.push(userId);
-            const user = await User.findById(userId);
-            io.to(groupId).emit("welcome", user?.username);
-          }
-          chat.lastActivity = new Date();
+          return socket.emit("error", "not found chat");
         }
+        const isMember = chat.members.includes(userId);
+        if (!isMember) {
+          chat.members.push(userId);
+          const user = await User.findById(userId);
+          const message = {
+            senderName: "notification",
+            profile: "notification",
+            content: `${user?.username}님이 입장하였습니다.`,
+            createdAt: new Date(),
+            userId: socket.user.id,
+          };
+          chat.messages.push(message);
+
+          io.to(groupId).emit("welcome", message);
+        }
+        chat.lastActivity = new Date();
+
         await chat.save();
 
         socket.emit("chatHistory", chat.messages, socket.user.id);
@@ -80,7 +83,6 @@ export const chatSocket = (io: Server) => {
       }
       const userId = new mongoose.Types.ObjectId(socket.user.id);
       const user = await User.findOne({ _id: userId });
-      console.log(user?.profileImg);
       if (user) {
         const message = {
           senderName: user.username,
@@ -93,7 +95,7 @@ export const chatSocket = (io: Server) => {
         if (chat) {
           chat.messages.push(message);
           await chat.save();
-          io.to(groupId).emit("new_message", chat.messages);
+          io.to(groupId).emit("new_message", message);
         }
       }
     });
