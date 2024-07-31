@@ -113,41 +113,6 @@ export const deleteStudyGroup = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteGroupUser = async (req: Request, res: Response) => {
-  const { groupId, userId } = req.params;
-  const { id } = req.body;
-
-  try {
-    const [group, chat] = await Promise.all([
-      findStudyGroupById(groupId),
-      findChatById(groupId),
-    ]);
-    if (!group || !chat) {
-      return res.status(404).json({ message: ERROR_MESSAGES.GROUP_NOT_FOUND });
-    }
-    const user = await findUserById(userId);
-    if (!user) {
-      return res.status(404).json({ message: ERROR_MESSAGES.USER_NOT_FOUND });
-    }
-    // 그룹장만 멤버 추방 가능
-    if (!id.equals(group.masterId)) {
-      return res.status(404).json({ message: "그룹장만 추방할 수 있습니다." });
-    }
-    // 그룹장은 추방 x
-    if (group.masterId.equals(userId)) {
-      return res.status(404).json({ message: "그룹장은 추방할 수 없습니다." });
-    }
-    // 멤버 추방
-    group.members = group.members.filter((member) => !member.equals(userId));
-    chat.members = chat.members.filter((member) => !member.equals(userId));
-    await group.save();
-    await chat.save();
-    res.json({ message: ERROR_MESSAGES.MEMBER_DELETED_SUCCESS });
-  } catch (error) {
-    console.error("멤버 추방 중 에러 발생", error);
-    res.status(500).json({ message: ERROR_MESSAGES.MEMBER_DELETED_FAILED });
-  }
-};
 export const getStudyGroups = async (req: Request, res: Response) => {
   try {
     const userId = req.body.id;

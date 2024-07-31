@@ -1,14 +1,12 @@
-import { Server, Socket } from "socket.io";
+import { Server } from "socket.io";
 import Chat from "../models/Chat";
 import mongoose from "mongoose";
 import User from "../models/User";
-import jwt from "jsonwebtoken";
 import {
   AuthenticatedSocket,
   authenticateSocket,
 } from "../middleware/authSocket";
-
-const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY || "";
+import StudyGroup from "../models/StudyGroup";
 
 const defaultImg =
   "https://image-sms.s3.ap-northeast-2.amazonaws.com/defaultProfileImg.png";
@@ -29,9 +27,14 @@ export const chatSocket = (io: Server) => {
       try {
         const userId = new mongoose.Types.ObjectId(socket.user.id);
         const chat = await Chat.findOne({ studyGroupId: groupId });
+        const group = await StudyGroup.findOne({ _id: groupId });
         // 채팅 방 없는 경우
         if (!chat) {
           return socket.emit("error", "not found chat");
+        }
+        const isGroup = group?.members.includes(userId);
+        if (!isGroup) {
+          return socket.emit("error", "not group members");
         }
         const isMember = chat.members.includes(userId);
         if (!isMember) {

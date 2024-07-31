@@ -9,6 +9,8 @@ import { authenticateJWT } from "./middleware/authenticateJWT";
 import http from "http";
 import { Server } from "socket.io";
 import { chatSocket } from "./sockets/chat";
+import { groupSocket } from "./sockets/group";
+import { todoSocket } from "./sockets/todo";
 
 const app: Express = express();
 const port = process.env.PORT;
@@ -41,6 +43,8 @@ app.get("/protected", authenticateJWT, (req, res) => {
 });
 
 chatSocket(io);
+groupSocket(io);
+todoSocket(io);
 httpServer.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });

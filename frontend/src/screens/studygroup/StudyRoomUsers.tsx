@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import axiosApi from "../../axios";
 import { fetchStudy } from "../../api/api";
@@ -38,29 +38,57 @@ function StudyRoomUsers({ groupId, socket }: ISocket) {
     const isConfirmed = window.confirm(
       "정말로 이 사용자를 그룹에서 제거하시겠습니까?"
     );
-    // 제거 웹소켓으로
-    if (isConfirmed) {
-      const res = await axiosApi.delete(`/studyGroup/${group._id}/${userId}`);
-      if (res.status === 200) {
-        alert(res.data.message);
-        fetchStudy(group._id, dispatch);
-      }
+    if (isConfirmed && socket) {
+      socket.emit("deleteMember", groupId, userId);
+      socket.on("success_quitGroup", () => {
+        console.log("멤버 추방", id, userId);
+        if (id === userId) {
+          navigate("/home");
+        }
+      });
     }
   };
+
+  useEffect(() => {
+    if (socket?.connected) {
+      socket.on("success_quitGroup", () => {
+        fetchStudy(group._id, dispatch);
+      });
+      socket.on("success_deleteMember", (userId) => {
+        if (id === userId) {
+          navigate("/home");
+        }
+      });
+
+      socket.emit("check_member", id, groupId);
+      socket.on("check_member", (isMember) => {
+        if (!isMember) {
+          alert("그룹의 멤버가 아닙니다.");
+          navigate("/home");
+        }
+      });
+    }
+  }, [socket, dispatch, group, id, navigate, groupId]);
 
   // 그룹 탈퇴랑 사용자 제거 로직 비슷함 웹소켓으로 엮어서 로직 수정하기
   const quitGroup = () => {
     const isConfirmed = window.confirm("정말로 이 그룹에서 나가시겠습니까?");
-    if (isConfirmed) {
+    if (isConfirmed && socket) {
+      if (socket) {
+        socket.emit("quitGroup", groupId);
+        socket.on("success_quitGroup", () => {
+          navigate("/home");
+        });
+      }
+      //navigate("/home");
     }
-
-    //navigate("/");
   };
+
   return (
     <div className="border-2 border-black w-[22%] flex flex-col items-center rounded-xl">
       <div className="flex justify-between items-center w-full p-2">
         <span className="font-bold text-lg">멤버 정보</span>
-        {group.masterId === id.id ? (
+        {group.masterId === id ? (
           <button
             className="border border-black p-1 rounded-md hover:opacity-60"
             onClick={manageGroup}
@@ -105,7 +133,7 @@ function StudyRoomUsers({ groupId, socket }: ISocket) {
                   >
                     정보 보기
                   </button>
-                  {group?.masterId !== user._id && group.masterId === id.id && (
+                  {group?.masterId !== user._id && group.masterId === id && (
                     <button
                       className="border border-black p-1 rounded-md hover:opacity-60"
                       onClick={() => deleteMember(user._id)}
