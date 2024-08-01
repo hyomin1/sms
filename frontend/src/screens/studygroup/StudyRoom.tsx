@@ -42,9 +42,15 @@ function StudyRoom() {
         </span>
         <span className="font-semibold text-sm mb-2">{group?.description}</span>
       </div>
-      <div className="flex justify-between w-full h-[80%]">
+      <div className="flex justify-between w-full h-[85%]">
         {socket && <StudyRoomUsers groupId={groupId || ""} socket={socket} />}
-        {socket && <StudyRoomToDo groupId={groupId || ""} socket={socket} />}
+        {socket && (
+          <StudyRoomToDo
+            groupId={groupId || ""}
+            group={group}
+            socket={socket}
+          />
+        )}
         {socket && <StudyRoomChat groupId={groupId || ""} socket={socket} />}
       </div>
     </div>

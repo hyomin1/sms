@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ApplicantUsers } from "../../interfaces/users";
 import axiosApi from "../../axios";
 
 function Users() {
   const location = useLocation();
+  const navigate = useNavigate();
+
   const [users, setUsers] = useState<ApplicantUsers[]>();
   const [groupId, setGroupId] = useState<string>();
   const acceptUser = async (user: ApplicantUsers) => {
@@ -24,8 +26,13 @@ function Users() {
   };
 
   const deleteGroup = async () => {
-    const res = await axiosApi.delete(`/studyGroup/${groupId}`);
-    console.log(res.data);
+    const isConfirm = window.confirm("정말로 그룹을 삭제하시겠습니까?");
+    if (isConfirm) {
+      const res = await axiosApi.delete(`/studyGroup/${groupId}`);
+      if (res.status === 200) {
+        navigate("/home");
+      }
+    }
   };
 
   useEffect(() => {

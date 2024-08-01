@@ -21,4 +21,5 @@ export interface IStudyGroup {
 export interface ISocket {
   groupId: string;
   socket: Socket | null;
+  group?: IStudyGroup;
 }

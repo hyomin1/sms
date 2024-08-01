@@ -8,6 +8,7 @@ const ERROR_MESSAGES = {
   USER_NOT_FOUND: "해당 유저가 존재하지 않습니다.",
   ALREADY_MEMBER: "사용자가 이미 그룹에 포함되어 있습니다.",
   ALREADY_APPLIED: "사용자가 이미 그룹 신청을 했습니다",
+  ALREADY_MAX: "그룹 구성원이 다 찼습니다.",
   GENDER_MISMATCH: "성별이 맞지 않습니다.",
   AGE_MISMATCH: "나이가 맞지 않습니다.",
   APPLICATION_FAILED: "그룹 신청 실패",
@@ -97,8 +98,10 @@ export const deleteStudyGroup = async (req: Request, res: Response) => {
     }
     // 그룹에 1명 남고 그 1명이 방장인 경우 삭제 하기
     if (group.members.length === 1 && group.members[0].equals(group.masterId)) {
-      await StudyGroup.deleteOne({ _id: groupId });
-
+      await Promise.all([
+        StudyGroup.deleteOne({ _id: groupId }),
+        Chat.deleteOne({ studyGroupId: groupId }),
+      ]);
       return res
         .status(200)
         .json({ message: ERROR_MESSAGES.GROUP_DELETED_SUCCESS });
@@ -203,6 +206,10 @@ export const joinStudyGroup = async (req: Request, res: Response) => {
       return res.status(404).json({ message: ERROR_MESSAGES.USER_NOT_FOUND });
     }
 
+    // 스터디 그룹 구성원 다 찬 경우
+    if (group.members.length === group.maxCapacity) {
+      return res.status(400).json({ message: ERROR_MESSAGES.ALREADY_MAX });
+    }
     // 사용자가 이미 스터디 그룹 멤버일 경우
     if (group.members.includes(id)) {
       return res.status(400).json({ message: ERROR_MESSAGES.ALREADY_MEMBER });
