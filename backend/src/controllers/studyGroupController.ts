@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import StudyGroup from "../models/StudyGroup";
 import User from "../models/User";
 import Chat from "../models/Chat";
+import { findStudyGroupById, findUserById } from "../api/api";
+import ToDo from "../models/ToDo";
 
 const ERROR_MESSAGES = {
   GROUP_NOT_FOUND: "그룹을 찾을 수 없습니다.",
@@ -28,18 +30,6 @@ const ERROR_MESSAGES = {
   GROUP_DELETED_SUCCESS: "그룹 삭제 성공",
   MEMBER_DELETED_FAILED: "멤버 삭제 실패",
   MEMBER_DELETED_SUCCESS: "멤버 삭제 성공",
-};
-
-const findStudyGroupById = async (groupId: string) => {
-  return StudyGroup.findOne({ _id: groupId });
-};
-
-const findUserById = async (userId: string) => {
-  return User.findOne({ _id: userId });
-};
-
-const findChatById = async (chatId: string) => {
-  return Chat.findOne({ studyGroupId: chatId });
 };
 
 export const createStudyGroup = async (req: Request, res: Response) => {
@@ -81,6 +71,10 @@ export const createStudyGroup = async (req: Request, res: Response) => {
       members: [id],
       messages: [],
       lastActivity: new Date(),
+    });
+    await ToDo.create({
+      studyGroupId: group._id,
+      notifications: [],
     });
     res.json({ message: ERROR_MESSAGES.GROUP_CREATION_SUCCESS });
   } catch (error) {

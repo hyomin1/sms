@@ -15,6 +15,11 @@ const notificationSchema = new Schema<INotification>({
 });
 
 const todoSchema = new Schema<IToDo>({
+  studyGroupId: {
+    type: Schema.Types.ObjectId,
+    ref: "StudyGroup",
+    required: true,
+  },
   notifications: [notificationSchema],
 });
 

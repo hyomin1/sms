@@ -3,22 +3,7 @@ import {
   AuthenticatedSocket,
   authenticateSocket,
 } from "../middleware/authSocket";
-
-import StudyGroup from "../models/StudyGroup";
-import User from "../models/User";
-import Chat from "../models/Chat";
-
-const findStudyGroupById = async (groupId: string) => {
-  return StudyGroup.findOne({ _id: groupId });
-};
-
-const findUserById = async (userId: string) => {
-  return User.findOne({ _id: userId });
-};
-
-const findChatById = async (chatId: string) => {
-  return Chat.findOne({ studyGroupId: chatId });
-};
+import { findChatById, findStudyGroupById, findUserById } from "../api/api";
 
 export const groupSocket = (io: Server) => {
   io.use(authenticateSocket);
