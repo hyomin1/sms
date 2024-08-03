@@ -59,14 +59,15 @@ function StudyRoomUsers({ groupId, socket }: ISocket) {
           navigate("/home");
         }
       });
-
-      socket.emit("check_member", id, groupId);
-      socket.on("check_member", (isMember) => {
-        if (!isMember) {
-          alert("그룹의 멤버가 아닙니다.");
-          navigate("/home");
-        }
-      });
+      if (id && groupId) {
+        socket.emit("check_member", id, groupId);
+        socket.on("check_member", (isMember) => {
+          if (!isMember) {
+            alert("그룹의 멤버가 아닙니다.");
+            navigate("/home");
+          }
+        });
+      }
     }
   }, [socket, dispatch, group, id, navigate, groupId]);
 

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { IStudyGroup } from "../../interfaces/studygroup";
+import { IStudyGroup } from "../interfaces/studygroup";
 
 const initialState: IStudyGroup = {
   _id: "",

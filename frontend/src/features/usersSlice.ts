@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ApplicantUsers } from "../../interfaces/users";
+import { ApplicantUsers } from "../interfaces/users";
 
 const initialState: ApplicantUsers[] = [];
 

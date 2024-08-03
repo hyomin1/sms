@@ -65,6 +65,7 @@ export const createStudyGroup = async (req: Request, res: Response) => {
       category,
       members: [id], // 생성 시 생성한 사람도 멤버에 포함됨
     });
+
     // 그룹 생성하면서 채팅방도 함께 생성
     await Chat.create({
       studyGroupId: group._id,
@@ -95,6 +96,7 @@ export const deleteStudyGroup = async (req: Request, res: Response) => {
       await Promise.all([
         StudyGroup.deleteOne({ _id: groupId }),
         Chat.deleteOne({ studyGroupId: groupId }),
+        ToDo.deleteOne({ studyGroupId: groupId }),
       ]);
       return res
         .status(200)

@@ -27,8 +27,12 @@ const handleResponseInterceptor = async (
     window.location.href = "/";
   } else if (error.response?.status === 403) {
   }
-  const errorMsg = error.response?.data as { message: string };
-  alert(errorMsg.message);
+
+  if (error.response?.data) {
+    alert(error.response.data);
+  }
+  //const errorMsg = error.response?.data as { message: string };
+  //alert(errorMsg.message);
   return new Promise(() => {});
 };
 

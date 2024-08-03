@@ -17,12 +17,43 @@ export const todoSocket = (io: Server) => {
     socket.on("disconnect", () => {});
 
     socket.on("notificationHistory", async (groupId) => {
-      const chat = await findToDoById(groupId);
-      socket.emit("notification");
+      const todo = await findToDoById(groupId);
+      if (!todo) {
+        socket.emit("error", "not found todo");
+      }
+      socket.emit("notificationHistory", todo?.notifications);
     });
 
-    socket.on("notification", async (content) => {
-      console.log(content);
+    socket.on("newNotification", async (groupId, content) => {
+      const todo = await findToDoById(groupId);
+      if (!todo) {
+        return socket.emit("error", "not found todo");
+      }
+
+      todo.notifications.push({
+        content,
+        createdAt: new Date(),
+      });
+
+      await todo.save();
+      io.to(groupId).emit("newNotification", {
+        content,
+        createdAt: new Date(),
+      });
+    });
+
+    socket.on("deleteNotification", async (groupId, index) => {
+      try {
+        const todo = await findToDoById(groupId);
+        if (!todo) {
+          return socket.emit("error", "not found todo");
+        }
+        todo.notifications.splice(index, 1);
+        await todo.save();
+        io.to(groupId).emit("updateNotification", todo.notifications);
+      } catch (error) {
+        socket.emit("error", error);
+      }
     });
   });
 };

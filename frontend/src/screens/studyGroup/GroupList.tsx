@@ -3,7 +3,7 @@ import axiosApi from "../../axios";
 import GroupListComponent from "../../components/GroupListComponent";
 import { IStudyGroup } from "../../interfaces/studygroup";
 import { useAppDispatch } from "../../app/hooks";
-import { setId } from "../../features/id/idSlice";
+import { setId } from "../../features/idSlice";
 
 function GroupList() {
   const [createdStudyGroups, setCreatedStudyGroups] = useState<IStudyGroup[]>();

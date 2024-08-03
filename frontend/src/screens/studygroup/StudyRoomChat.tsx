@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axiosApi from "../../axios";
 import { useNavigate } from "react-router-dom";
 import { ISocket } from "../../interfaces/studygroup";
+import { calDay } from "../../api/api";
 
 interface IChatHistory {
   senderName: string;
@@ -64,15 +65,6 @@ function StudyRoomChat({ groupId, socket }: ISocket) {
       socket.emit("new_message", message, groupId);
       setMessage("");
     }
-  };
-
-  const calDay = (date: Date) => {
-    const year = new Date(date).getFullYear();
-    const month = new Date(date).getMonth() + 1;
-    const day = new Date(date).getDate();
-    const hour = new Date(date).getHours();
-    const minute = new Date(date).getMinutes() + 1;
-    return `${year}년 ${month}월 ${day}일 ${hour}시 ${minute}분`;
   };
 
   return (

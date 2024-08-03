@@ -57,7 +57,7 @@ function StudyRoom() {
             socket={socket}
           />
         </div>
-        <div className="flex justify-between">
+        <div className="flex justify-between h-[88%]">
           {socket && <StudyRoomUsers groupId={groupId || ""} socket={socket} />}
           {socket && (
             <StudyRoomToDo
