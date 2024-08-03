@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { ApplicantUsers } from "../../interfaces/users";
-import axiosApi from "../../axios";
 import UserInformComponent from "../../components/UserInformComponent";
 import { useLocation } from "react-router-dom";
 

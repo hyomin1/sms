@@ -47,7 +47,7 @@ const refreshAccessToken = (req: Request, res: Response) => {
   if (!refreshToken) {
     // 이 경우 다시 로그인페이지로 보내서 refresh 발급받는다.
     return res.status(401).json({
-      message: "리프레시 토큰이 존재하지 않습니다. 다시 로그인 해주세요.",
+      message: "로그인후 이용 해주세요.",
     });
   }
   jwt.verify(refreshToken, JWT_REFRESH_SECRET_KEY, (err: any, user: any) => {

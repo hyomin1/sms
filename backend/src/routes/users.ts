@@ -11,6 +11,7 @@ import {
   kakaoCallback,
   kakaoLoginUser,
   loginUser,
+  logoutUser,
 } from "../controllers/userController";
 import {
   authenticateJWT,
@@ -25,6 +26,7 @@ router.post("/login", loginUser);
 router.post("/addInform", addInform);
 router.post("/users", getUsers);
 
+router.get("/logout", logoutUser);
 router.get("/kakaoLogin", kakaoLoginUser);
 router.get("/googleLogin", googleLoginUser);
 router.get("/kakao/callback", kakaoCallback);

@@ -90,6 +90,15 @@ export const loginUser = async (req: Request, res: Response) => {
   }
 };
 
+export const logoutUser = async (req: Request, res: Response) => {
+  res.clearCookie("refreshToken", {
+    httpOnly: true,
+    sameSite: "strict",
+    //secure: true, // HTTPS에서만 사용하도록 설정(배포 시)
+  });
+  res.status(200).json({ message: "로그아웃 성공" });
+};
+
 export const getUser = async (req: Request, res: Response) => {
   const { id } = req.body;
 
