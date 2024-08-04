@@ -73,9 +73,11 @@ export const createStudyGroup = async (req: Request, res: Response) => {
       messages: [],
       lastActivity: new Date(),
     });
+
     await ToDo.create({
       studyGroupId: group._id,
       notifications: [],
+      checkLists: [],
     });
     res.json({ message: ERROR_MESSAGES.GROUP_CREATION_SUCCESS });
   } catch (error) {

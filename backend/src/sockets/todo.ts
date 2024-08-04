@@ -55,5 +55,38 @@ export const todoSocket = (io: Server) => {
         socket.emit("error", error);
       }
     });
+
+    socket.on("checkListHistory", async (groupId) => {
+      try {
+        const todo = await findToDoById(groupId);
+        if (!todo) {
+          return socket.emit("error", "not found todo");
+        }
+        socket.emit("checkListHistory", todo.checkLists);
+      } catch (error) {
+        socket.emit("error", error);
+      }
+    });
+    socket.on("newCheckList", async (groupId, content) => {
+      try {
+        const todo = await findToDoById(groupId);
+        if (!todo) {
+          return socket.emit("error", "not found todo");
+        }
+        todo.checkLists.push({
+          content,
+          createdAt: new Date(),
+        });
+
+        await todo.save();
+
+        io.to(groupId).emit("newCheckList", {
+          content,
+          createdAt: new Date(),
+        });
+      } catch (error) {
+        socket.emit("error", error);
+      }
+    });
   });
 };

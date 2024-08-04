@@ -1,15 +1,16 @@
 import mongoose, { Schema } from "mongoose";
 
-interface INotification {
+interface IPost {
   content: string;
   createdAt: Date;
 }
 
 interface IToDo {
   studyGroupId: mongoose.Types.ObjectId;
-  notifications: INotification[];
+  notifications: IPost[];
+  checkLists: IPost[];
 }
-const notificationSchema = new Schema<INotification>({
+const postSchema = new Schema<IPost>({
   content: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
 });
@@ -20,7 +21,8 @@ const todoSchema = new Schema<IToDo>({
     ref: "StudyGroup",
     required: true,
   },
-  notifications: [notificationSchema],
+  notifications: [postSchema],
+  checkLists: [postSchema],
 });
 
 const ToDo = mongoose.model<IToDo>("ToDo", todoSchema);

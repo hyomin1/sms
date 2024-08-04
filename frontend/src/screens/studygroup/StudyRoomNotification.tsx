@@ -1,17 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { FaPencil } from "react-icons/fa6";
 import { useAppSelector } from "../../app/hooks";
-import { ISocket } from "../../interfaces/studygroup";
+import { IPost, ISocket } from "../../interfaces/studygroup";
 import { calDay } from "../../api/api";
 import { FaTrash } from "react-icons/fa";
 
-interface INotification {
-  content: string;
-  createdAt: Date;
-}
-
 function StudyRoomNotification({ group, groupId, socket }: ISocket) {
-  const [notifications, setNotifications] = useState<INotification[]>([]);
+  const [notifications, setNotifications] = useState<IPost[]>([]);
   const id = useAppSelector((state) => state.id);
 
   useEffect(() => {
@@ -46,8 +41,8 @@ function StudyRoomNotification({ group, groupId, socket }: ISocket) {
     }
   };
   return (
-    <div className="border-2 border-black rounded-xl w-[44%] h-[200px] p-2">
-      <div className="flex justify-between items-center">
+    <div className="border-2 border-black rounded-xl w-[44%] h-[200px] p-4">
+      <div className="flex justify-between items-center mb-4">
         <span className="text-xl font-bold">공지 사항</span>
         {group?.masterId === id && (
           <FaPencil
@@ -56,15 +51,15 @@ function StudyRoomNotification({ group, groupId, socket }: ISocket) {
           />
         )}
       </div>
-      <div className="overflow-y-auto h-[80%] p-4 ">
+      <div className="overflow-y-auto h-[80%] ">
         <ul>
           {notifications.map((notification, index) => (
-            <li key={index} className="flex justify-between mb-2">
-              <div className="flex items-center">
-                <span className="text-xs mr-2">
+            <li key={index} className="flex justify-between mb-4">
+              <div className="flex flex-col items-start">
+                <li className="font-bold">{notification.content}</li>
+                <span className="mr-2 text-[0.55rem]">
                   {calDay(notification.createdAt)}
                 </span>
-                <li>{notification.content}</li>
               </div>
               {group?.masterId === id && (
                 <FaTrash

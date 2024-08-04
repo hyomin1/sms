@@ -23,3 +23,8 @@ export interface ISocket {
   socket: Socket | null;
   group?: IStudyGroup;
 }
+
+export interface IPost {
+  content: string;
+  createdAt: Date;
+}
